@@ -1,5 +1,13 @@
 import jwt from "jsonwebtoken";
 
+export const extractTenant = (req, res, next) => {
+  const tenant = req.headers["x-tenant"]?.toLowerCase().trim();
+
+  req.tenant = tenant || null;
+
+  next();
+};
+
 export const protect = (req, res, next) => {
   try {
     const token = req.cookies?.token;
@@ -18,45 +26,30 @@ export const protect = (req, res, next) => {
   }
 };
 
-export const checkTenantAccess = (req, res, next) => {
-  const requestedSlug = req.headers["x-tenant"];
-
-  if (!requestedSlug) {
-    return res.status(400).json({ message: "Tenant not provided" });
+export const requireTenant = (req, res, next) => {
+  if (!req.tenant) {
+    return res.status(400).json({ message: "Tenant required" });
   }
-
-  // ---------------- TEACHER ----------------
-  if (req.user.role === "teacher") {
-    // allow ONLY their own tenant
-    if (req.user.slug !== requestedSlug) {
-      return res.status(403).json({
-        message: "You cannot access another teacher's tenant",
-      });
-    }
-
-    req.tenant = requestedSlug;
-    return next();
-  }
-
-  // ---------------- STUDENT ----------------
-  if (req.user.role === "student") {
-    if (req.user.teacherSlug !== requestedSlug) {
-      return res.status(403).json({
-        message: "Unauthorized tenant access",
-      });
-    }
-
-    req.tenant = requestedSlug;
-    return next();
-  }
-
-  return res.status(403).json({ message: "Invalid role" });
+  next();
 };
 
+export const validateStudentAccess = (req, res, next) => {
+  if (req.user.slug !== req.tenant) {
+    return res.status(403).json({ message: "Unauthorized tenant" });
+  }
+  next();
+};
+ 
+export const teacherPreviewAccess = (req, res, next) => {
+  if (req.user.role === "teacher" && req.user.slug === req.tenant) {
+    req.isDemo = true;
+  }
+  next();
+};
 
 export const teacherOnly = (req, res, next) => {
   if (req.user.role !== "teacher") {
-    return res.status(403).json({ message: "Teacher access only" });
+    return res.status(403).json({ message: "Teacher only access" });
   }
   next();
 };
