@@ -9,6 +9,15 @@ export const createCourse = async (req, res) => {
     const tenant = req.user.slug.toLowerCase().trim();
     const courseSlug = slug.toLowerCase().trim();
 
+    const existingTenant = await User.findOne({
+      slug: tenant,
+      role: "teacher",
+    });
+    
+    if (!existingTenant) {
+      return res.status(404).json({ message: "No such Teacher Exists" });
+    }
+
     if (!courseSlug) {
       return res.status(400).json({ message: "Slug is required" });
     }
@@ -125,7 +134,7 @@ export const deleteCourse = async (req, res) => {
   }
 };
 
-export const getCoursesforTenant = async (req, res) => {
+export const getCourses = async (req, res) => {
   try {
     const tenant = req.tenant;
 
@@ -169,11 +178,14 @@ export const getCourseDetails = async (req, res) => {
       tenant,
     });
 
-    if (
-      !course ||
-      (!course.isPublished && (!user || user.role !== "teacher"))
-    ) {
+    if (!course) {
       return res.status(404).json({ message: "Course not found" });
+    }
+
+    if (!course.isPublished) {
+      if (!user || user.role !== "teacher" || user.slug !== tenant) {
+        return res.status(404).json({ message: "Course not found" });
+      }
     }
 
     let isOwner = false;
@@ -182,6 +194,7 @@ export const getCourseDetails = async (req, res) => {
 
     if (user && user.role === "teacher" && user.slug === tenant) {
       isOwner = true;
+      isEnrolled = true; // treat owner as enrolled for access purposes
       canViewLectures = true; // full access
     } else if (user && user.role === "student") {
       // check enrollment
@@ -216,7 +229,6 @@ export const getCourseDetails = async (req, res) => {
         canViewLectures,
       },
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message || "Server Error" });
   }
