@@ -4,8 +4,8 @@ import { extractTenant , teacherOnly , protect  , requireTenant , teacherPreview
 
 const router = Router();
 
-router.post("/register", register);
-router.post("/login", login);
+router.post("/register", extractTenant , register);
+router.post("/login", extractTenant , login);
 
 router.get(
   "/me",

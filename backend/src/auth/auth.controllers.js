@@ -28,6 +28,19 @@ export const register = async (req, res) => {
 
       const normalSlug = slug?.toLowerCase().trim();
 
+
+            // check email already exists in same tenant
+      const existingEmail = await User.findOne({
+        email,
+        role: "teacher",
+      });
+
+      if (existingEmail) {
+        return res.status(400).json({
+          message: "User already exists",
+        });
+      }
+
       const existingSlug = await User.findOne({
         slug: normalSlug,
         role: "teacher",
@@ -36,18 +49,6 @@ export const register = async (req, res) => {
       if (existingSlug) {
         return res.status(400).json({
           message: "Subdomain already taken",
-        });
-      }
-
-      // check email already exists in same tenant
-      const existingEmail = await User.findOne({
-        email,
-        slug: normalSlug,
-      });
-
-      if (existingEmail) {
-        return res.status(400).json({
-          message: "User already exists",
         });
       }
 
