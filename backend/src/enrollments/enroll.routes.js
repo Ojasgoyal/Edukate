@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { protect , extractTenant , requireTenant , validateStudentAccess, teacherOnly } from "../middlewares/auth.middleware"
+import { protect , extractTenant , requireTenant , validateStudentAccess, teacherOnly } from "../middlewares/auth.middleware.js"
 import { getEnrollments , getCourses , enroll } from "./enroll.controllers.js"
 
 

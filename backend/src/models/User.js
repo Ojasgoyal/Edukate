@@ -34,8 +34,13 @@ const userSchema = new mongoose.Schema(
 
 userSchema.index(
   { email: 1, slug: 1 },
-  { unique: true }
+  { unique: true , partialFilterExpression: { role: "student" } }
 );
+
+userSchema.index(
+  { email: 1 },
+  { unique: true, partialFilterExpression: { role: "teacher" } },
+)
 
 userSchema.index(
   { slug: 1 },
