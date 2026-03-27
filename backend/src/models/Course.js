@@ -11,7 +11,7 @@ const courseSchema = new mongoose.Schema(
       type: String,
     },
 
-    slug: {
+    courseSlug: {
       type: String,
       required: true,
       lowercase: true,
@@ -23,9 +23,10 @@ const courseSchema = new mongoose.Schema(
       required: true,
     },
 
-    teacherSlug: {
+    tenant: {
       type: String,
       required: true,
+      lowercase:true
     },
 
     lectures: [
@@ -42,6 +43,6 @@ const courseSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-courseSchema.index({ teacherSlug: 1, slug: 1 }, { unique: true });
+courseSchema.index({ tenant: 1, courseSlug: 1 }, { unique: true });
 
 export default mongoose.model("Course", courseSchema);
