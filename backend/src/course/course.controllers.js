@@ -1,19 +1,22 @@
 import Course from "../models/course.js";
+import User from "../models/User.js"
 
 export const createCourse = async (req, res) => {
   try {
-    const { title, description, slug, lectures } = req.body;
+    const { title, description, slug , lectures } = req.body;
     const teacherId = req.user.id;
-    const teacherSlug = req.user.slug.toLowerCase().trim();
+    const tenant = req.user.slug.toLowerCase().trim();
+    const courseSlug = slug.toLowerCase().trim()
 
-    if (!slug) {
+    if (!courseSlug) {
       return res.status(400).json({ message: "Slug is required" });
     }
 
     const courseExists = await Course.findOne({
-      slug: slug.toLowerCase().trim(),
-      teacherSlug,
+      courseSlug,
+      tenant,
     });
+
     if (courseExists) {
       return res
         .status(400)
@@ -23,10 +26,10 @@ export const createCourse = async (req, res) => {
     const course = await Course.create({
       title,
       description,
-      slug: slug.toLowerCase().trim(),
+      courseSlug,
       lectures,
       teacherId,
-      teacherSlug,
+      tenant,
       isPublished: false,
     });
 
@@ -57,9 +60,9 @@ export const getMyCourses = async (req, res) => {
 
 export const getCourse = async (req, res) => {
   try {
-    const slug = req.params.slug.toLowerCase().trim();
+    const courseSlug = req.params.slug.toLowerCase().trim();
 
-    const course = await Course.findOne({ slug, teacherId: req.user.id });
+    const course = await Course.findOne({ courseSlug, teacherId: req.user.id });
 
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
@@ -73,9 +76,10 @@ export const getCourse = async (req, res) => {
 
 export const updateCourse = async (req, res) => {
   try {
-    const slug = req.params.slug.toLowerCase().trim();
+    const courseSlug = req.params.slug.toLowerCase().trim();
+
     const course = await Course.findOne({
-      slug,
+      courseSlug,
       teacherId: req.user.id,
     });
 
@@ -90,6 +94,7 @@ export const updateCourse = async (req, res) => {
         course[field] = req.body[field];
       }
     });
+
     await course.save();
 
     res
@@ -102,10 +107,10 @@ export const updateCourse = async (req, res) => {
 
 export const deleteCourse = async (req, res) => {
   try {
-    const slug = req.params.slug.toLowerCase().trim();
+    const courseSlug = req.params.slug.toLowerCase().trim();
 
     const course = await Course.findOneAndDelete({
-      slug,
+      courseSlug,
       teacherId: req.user.id,
     });
 
@@ -119,19 +124,27 @@ export const deleteCourse = async (req, res) => {
   }
 };
 
-export const getCourses = async (req, res) => {
+export const getCoursesforTenant = async (req, res) => {
   try {
-    const teacherSlug = req.headers["x-tenant"]?.toLowerCase().trim();
+    const tenant = req.tenant;
 
-    if (!teacherSlug) {
+    if (!tenant) {
       return res.status(400).json({ message: "Tenant required" });
     }
 
+    const existingTenant = await User.findOne({ slug:tenant , role:"teacher"})
+
+    if(!existingTenant){
+      return res.status(404).json({message:"No such Teacher Exists"})
+    }
+
     const courses = await Course.find({
-      teacherSlug,
+      tenant,
       isPublished: true,
     }).select("-lectures");
+
     res.status(200).json({ courses });
+
   } catch (error) {
     res.status(500).json({ message: error.message || "Server Error" });
   }
@@ -139,18 +152,19 @@ export const getCourses = async (req, res) => {
 
 export const getCourseDetails = async (req, res) => {
   try {
-    const slug = req.params.slug.toLowerCase().trim();
-    const teacherSlug = req.headers["x-tenant"]?.toLowerCase().trim();
+    const courseSlug = req.params.slug.toLowerCase().trim();
+    const tenant = req.tenant;
 
-    if (!slug || !teacherSlug) {
+    if (!courseSlug || !tenant) {
       return res.status(400).json({ message: "Slug and tenant required" });
     }
 
+    // if enrolled change course featching details as per it
     const course = await Course.findOne({
-      slug,
-      teacherSlug,
+      courseSlug,
+      tenant,
       isPublished: true,
-    });
+    }).select("-lectures");
 
     if (!course) {
       return res.status(404).json({ message: "Course not found" });

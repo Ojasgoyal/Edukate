@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { createCourse , getMyCourses , getCourses , updateCourse , deleteCourse , getCourseDetails  , getCourse} from "./course.controllers.js";
-import { checkTenantAccess, protect , teacherOnly } from "../middlewares/auth.middleware.js";
+import { extractTenant , checkTenantAccess, protect , teacherOnly } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.post("/create", protect, teacherOnly, createCourse);
+router.post("/create", protect, teacherOnly , createCourse);
 router.get("/mycourses", protect, teacherOnly, getMyCourses);
 router.get("/edit/:slug", protect, teacherOnly, getCourse);
 router.patch("/edit/:slug", protect, teacherOnly, updateCourse);
