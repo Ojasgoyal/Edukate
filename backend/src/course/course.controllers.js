@@ -1,12 +1,13 @@
-import Course from "../models/course.js";
-import User from "../models/User.js"
+import Course from "../models/Course.js";
+import User from "../models/User.js";
+import Enrollments from "../models/Enrollments.js";
 
 export const createCourse = async (req, res) => {
   try {
-    const { title, description, slug , lectures } = req.body;
+    const { title, description, slug, lectures } = req.body;
     const teacherId = req.user.id;
     const tenant = req.user.slug.toLowerCase().trim();
-    const courseSlug = slug.toLowerCase().trim()
+    const courseSlug = slug.toLowerCase().trim();
 
     if (!courseSlug) {
       return res.status(400).json({ message: "Slug is required" });
@@ -132,10 +133,13 @@ export const getCoursesforTenant = async (req, res) => {
       return res.status(400).json({ message: "Tenant required" });
     }
 
-    const existingTenant = await User.findOne({ slug:tenant , role:"teacher"})
+    const existingTenant = await User.findOne({
+      slug: tenant,
+      role: "teacher",
+    });
 
-    if(!existingTenant){
-      return res.status(404).json({message:"No such Teacher Exists"})
+    if (!existingTenant) {
+      return res.status(404).json({ message: "No such Teacher Exists" });
     }
 
     const courses = await Course.find({
@@ -144,7 +148,6 @@ export const getCoursesforTenant = async (req, res) => {
     }).select("-lectures");
 
     res.status(200).json({ courses });
-
   } catch (error) {
     res.status(500).json({ message: error.message || "Server Error" });
   }
@@ -154,6 +157,7 @@ export const getCourseDetails = async (req, res) => {
   try {
     const courseSlug = req.params.slug.toLowerCase().trim();
     const tenant = req.tenant;
+    const user = req.user;
 
     if (!courseSlug || !tenant) {
       return res.status(400).json({ message: "Slug and tenant required" });
@@ -163,14 +167,56 @@ export const getCourseDetails = async (req, res) => {
     const course = await Course.findOne({
       courseSlug,
       tenant,
-      isPublished: true,
-    }).select("-lectures");
+    });
 
-    if (!course) {
+    if (
+      !course ||
+      (!course.isPublished && (!user || user.role !== "teacher"))
+    ) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    res.status(200).json({ course });
+    let isOwner = false;
+    let isEnrolled = false;
+    let canViewLectures = false;
+
+    if (user && user.role === "teacher" && user.slug === tenant) {
+      isOwner = true;
+      canViewLectures = true; // full access
+    } else if (user && user.role === "student") {
+      // check enrollment
+      const enrollment = await Enrollments.findOne({
+        studentId: user.id,
+        courseId: course._id,
+      });
+
+      if (enrollment) {
+        isEnrolled = true;
+        canViewLectures = true;
+      }
+    }
+
+    let responseCourse = {
+      id: course._id,
+      title: course.title,
+      description: course.description,
+      slug: course.courseSlug,
+      isPublished: course.isPublished,
+    };
+
+    if (canViewLectures) {
+      responseCourse.lectures = course.lectures;
+    }
+
+    return res.status(200).json({
+      course: responseCourse,
+      access: {
+        isOwner,
+        isEnrolled,
+        canViewLectures,
+      },
+    });
+
   } catch (error) {
     res.status(500).json({ message: error.message || "Server Error" });
   }

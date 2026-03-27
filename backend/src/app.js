@@ -3,6 +3,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import authRoutes from "./auth/auth.routes.js";
 import courseRoutes from "./course/course.routes.js";
+import enrollRoutes from "./enrollments/enroll.routes.js"
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cookieParser())
 
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
+app.use("/api/enroll" , enrollRoutes)
 
 app.get("/", (req, res) => {
     res.send("Edukate API running...");
