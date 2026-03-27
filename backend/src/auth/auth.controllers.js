@@ -1,14 +1,12 @@
-import Teacher from "../models/Teacher.js";
-import Student from "../models/Student.js";
+import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const sendToken = (res, token, domain) => {
+const sendToken = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, // true in production (HTTPS)
-    sameSite: "lax", // 🔥 important
-    // domain, // set cookie for subdomains
+    secure: false, // true in production
+    sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
@@ -17,102 +15,130 @@ export const register = async (req, res) => {
   try {
     const { name, email, password, role, slug } = req.body;
 
-    if (!name || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Name, email and password required" });
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
     }
     // ---------------- TEACHER ----------------
     if (role === "teacher") {
       if (!slug) {
         return res.status(400).json({ message: "Slug required" });
       }
+
       const normalSlug = slug?.toLowerCase().trim();
 
-      const existingEmail = await Teacher.findOne({ email });
-      const existingSlug = await Teacher.findOne({ slug: normalSlug });
+      const existingSlug = await User.findOne({
+        slug: normalSlug,
+        role: "teacher",
+      });
+
+      if (existingSlug) {
+        return res.status(400).json({
+          message: "Subdomain already taken",
+        });
+      }
+
+      // check email already exists in same tenant
+      const existingEmail = await User.findOne({
+        email,
+        slug: normalSlug,
+      });
 
       if (existingEmail) {
-        return res
-          .status(400)
-          .json({ message: "Teacher with email already exists" });
-      }
-      if (existingSlug) {
-        return res.status(400).json({ message: "SubDomain is already used" });
+        return res.status(400).json({
+          message: "User already exists",
+        });
       }
 
       const hashed = await bcrypt.hash(password, 10);
 
-      const teacher = await Teacher.create({
+      const user = await User.create({
         name,
         email,
         password: hashed,
+        role: "teacher",
         slug: normalSlug,
       });
 
       const token = jwt.sign(
         {
-          id: teacher._id,
-          role: "teacher",
-          slug: teacher.slug,
+          id: user._id,
+          role: user.role,
+          slug: user.slug,
         },
         process.env.JWT_SECRET,
         { expiresIn: "7d" },
       );
 
-      sendToken(res, token, process.env.COOKIE_DOMAIN);
+      sendToken(res, token);
 
       return res.status(201).json({
         user: {
-          name: teacher.name,
-          email: teacher.email,
-          slug: teacher.slug,
+          name: user.name,
+          email: user.email,
+          slug: user.slug,
+          role: user.role,
         },
       });
     } else if (role === "student") {
       // ---------------- STUDENT ----------------
+      const tenantSlug = req.tenant?.toLowerCase().trim();
 
-      const teacherSlug = req.headers["x-tenant"];
-
-      if (!teacherSlug) {
-        return res.status(400).json({ message: "Subdomain required" });
+      if (!tenantSlug) {
+        return res.status(400).json({ message: "Tenant Slug required" });
       }
 
-      const existing = await Student.findOne({
+      const teacherExists = await User.findOne({
+        slug: tenantSlug,
+        role: "teacher",
+      });
+
+      if (!teacherExists) {
+        return res.status(404).json({
+          message: "Invalid tenant",
+        });
+      }
+
+      const existing = await User.findOne({
         email,
-        teacherSlug,
+        slug: tenantSlug,
       });
 
       if (existing) {
-        return res.status(400).json({ message: "Student already exists" });
+        return res.status(400).json({
+          message: "User already exists",
+        });
       }
 
       const hashed = await bcrypt.hash(password, 10);
 
-      const student = await Student.create({
+      const user = await User.create({
         name,
         email,
         password: hashed,
-        teacherSlug,
+        role: "student",
+        slug: tenantSlug,
       });
 
       const token = jwt.sign(
         {
-          id: student._id,
-          role: "student",
-          teacherSlug,
+          id: user._id,
+          role: user.role,
+          slug: user.slug,
         },
         process.env.JWT_SECRET,
         { expiresIn: "7d" },
       );
 
-      sendToken(res, token, `${teacherSlug}.${process.env.COOKIE_DOMAIN}`);
+      sendToken(res, token);
 
       return res.status(201).json({
         user: {
-          name: student.name,
-          email: student.email,
-          teacherSlug: student.teacherSlug,
+          name: user.name,
+          email: user.email,
+          slug: user.slug,
+          role: user.role,
         },
       });
     }
@@ -125,83 +151,85 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password, role, slug } = req.body;
 
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
+    if (!email || !password || !role) {
+      return res.status(400).json({
+        message: "Email, password, role required",
+      });
     }
 
+    let user;
+
+    // ---------------- TEACHER ----------------
     if (role === "teacher") {
-      const teacher = await Teacher.findOne({ email });
-
-      if (!teacher) {
-        return res.status(400).json({ message: "No Teacher found" });
-      }
-
-      const isMatch = await bcrypt.compare(password, teacher.password);
-
-      if (!isMatch) {
-        return res.status(400).json({ message: "Invalid credentials" });
-      }
-
-      const token = jwt.sign(
-        {
-          id: teacher._id,
-          role: "teacher",
-          slug: teacher.slug,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" },
-      );
-
-      sendToken(res, token, process.env.COOKIE_DOMAIN); // "edukate.in"
-
-      return res.status(201).json({
-        user: {
-          name: teacher.name,
-          email: teacher.email,
-          slug: teacher.slug,
-        },
+      user = await User.findOne({
+        email,
+        role: "teacher",
       });
-    } else if (role === "student") {
-      const teacherSlug = req.headers["x-tenant"];
 
-      if (!teacherSlug) {
-        return res.status(400).json({ message: "Subdomain required" });
+      if (!user) {
+        return res.status(400).json({
+          message: "No teacher found",
+        });
       }
-      const student = await Student.findOne({ email, teacherSlug });
+    }
 
-      if (!student) {
-        return res.status(400).json({ message: "No Student found" });
+    // ---------------- STUDENT ----------------
+    if (role === "student") {
+      const tenantSlug = req.tenant?.toLowerCase().trim();
+
+      if (!tenantSlug) {
+        return res.status(400).json({
+          message: "Tenant required",
+        });
       }
-      const isMatch = await bcrypt.compare(password, student.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: "Invalid credentials" });
+
+      user = await User.findOne({
+        email,
+        role: "student",
+        slug: tenantSlug,
+      });
+
+      if (!user) {
+        return res.status(400).json({
+          message: "No student found",
+        });
       }
+    }
 
-      const token = jwt.sign(
-        {
-          id: student._id,
-          role: "student",
-          teacherSlug,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" },
-      );
+    if (!user) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
 
-      sendToken(res, token, `${teacherSlug}.${process.env.COOKIE_DOMAIN}`);
+    const isMatch = await bcrypt.compare(password, user.password);
 
-      return res.status(201).json({
-        user: {
-          name: student.name,
-          email: student.email,
-          teacherSlug: student.teacherSlug,
-        },
+    if (!isMatch) {
+      return res.status(400).json({
+        message: "Invalid credentials",
       });
     }
-    return res.status(400).json({ message: "Invalid role" });
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        slug: user.slug,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    sendToken(res, token);
+
+    return res.status(200).json({
+      user: {
+        name: user.name,
+        email: user.email,
+        slug: user.slug,
+        role: user.role,
+      },
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -210,7 +238,7 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "lax"
+    sameSite: "lax",
   });
 
   res.status(200).json({ message: "Logged out successfully" });
