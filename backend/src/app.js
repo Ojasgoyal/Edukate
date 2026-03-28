@@ -1,9 +1,11 @@
 import express from "express"
+import dotenv from "dotenv"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import authRoutes from "./auth/auth.routes.js";
 import courseRoutes from "./course/course.routes.js";
 import enrollRoutes from "./enrollments/enroll.routes.js"
+dotenv.config();
 
 const app = express();
 
