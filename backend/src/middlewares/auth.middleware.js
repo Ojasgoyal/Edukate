@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 
 export const extractTenant = (req, res, next) => {
-  const tenant = req.headers["x-tenant"]?.toLowerCase().trim();
-
-  req.tenant = tenant || null;
+  const tenant = req.headers["x-tenant"] ?? req.user?.tenant;
+  
+  req.tenant = tenant?.trim().toLowerCase() || null;
 
   next();
 };

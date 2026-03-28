@@ -9,9 +9,8 @@ router.post("/login", extractTenant , login);
 
 router.get(
   "/me",
-  extractTenant,
   protect,
-  requireTenant,
+  extractTenant,
   teacherPreviewAccess,
   validateStudentAccess,
   (req, res) => {
@@ -22,6 +21,8 @@ router.get(
     });
   }
 );
+
+router.get
 
 router.post("/logout", protect ,logout);
 
