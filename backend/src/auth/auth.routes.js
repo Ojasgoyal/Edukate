@@ -23,8 +23,6 @@ router.get(
   }
 );
 
-router.get("/tenant" , extractTenant , requireTenant , tenantExists);
-
 router.post("/logout", protect ,logout);
 
 export default router;

@@ -5,37 +5,15 @@ import axios from "axios";
 export const TenantContext = createContext();
 
 export const TenantProvider = ({ children }) => {
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
   const [tenant, setTenant] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const [validTenant, setValidTenant] = useState(null);
 
   useEffect(() => {
     const t = getTenantFromHost();
     setTenant(t);
-
-    if (!t) {
-      setLoading(false);
-      return;
-    }
-
-    const checkTenant = async () => {
-      try {
-        const valid = await axios.get(`${apiBaseUrl}/api/auth/tenant` , { headers: { "x-tenant": t } });
-        setValidTenant(true);
-      } catch {
-        setValidTenant(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkTenant();
   }, []);
 
   return (
-    <TenantContext.Provider value={{ tenant, loading, validTenant }}>
+    <TenantContext.Provider value={{ tenant }}>
       {children}
     </TenantContext.Provider>
   );
