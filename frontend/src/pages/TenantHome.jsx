@@ -17,17 +17,17 @@ export default function TenantHome() {
     
     useEffect(() => {
       if (!tenant) return;
-      console.log(tenant);
-
+    
     const fetchData = async () => {
       try {
         const response = await axios.get(`${apiBaseUrl}/api/courses`, {
           headers: { "x-tenant": tenant },
           withCredentials: true,
         });
-
+        console.log("Courses fetched:", response.data);
         setCourses(response.data.courses);
       } catch (error) {
+        console.error("Error fetching courses:", error);
         if (error.response?.status === 404) {
           setError("NO_TENANT");
         } else {
