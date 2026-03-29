@@ -23,9 +23,9 @@ export default function TenantHome() {
           headers: { "x-tenant": tenant },
         });
 
-        setCourses(res.data.courses);
+        setCourses(response.data.courses);
       } catch (error) {
-        if (err.response?.status === 404) {
+        if (error.response?.status === 404) {
           setError("NO_TENANT");
         } else {
           setError("GENERIC");
@@ -40,7 +40,7 @@ export default function TenantHome() {
 
   if (loading) return <div>Loading...</div>;
 
-  if (error.response.status === 404) {
+  if (error === "NO_TENANT") {
     return <h2>No such educator "{tenant}" found</h2>;
   }
 
