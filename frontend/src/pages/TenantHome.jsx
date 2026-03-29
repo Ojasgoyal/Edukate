@@ -1,6 +1,6 @@
 import { use, useEffect, useState } from "react";
 import { useContext } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { TenantContext } from "../context/TenantContext";
 import axios from "axios";
 
