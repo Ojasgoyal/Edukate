@@ -1,9 +1,11 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { SwatchBook } from "lucide-react";
 import { useState } from "react";
 
 export default function DashboardLayout() {
+  const { setUser } = useAuth();
   const [tab, setTab] = useState("dashboard");
   const current =
     "bg-foreground text-background transition-colors duration-300";
@@ -19,7 +21,7 @@ export default function DashboardLayout() {
         withCredentials: true,
       },
     );
-    window.location.href = "/login";
+    setUser(null);
   };
 
   return (
