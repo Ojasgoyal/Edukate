@@ -2,7 +2,7 @@
 import { Routes, Route } from "react-router-dom";
 import Course from "../pages/Course";
 import TenantHome from "../pages/TenantHome";
-import NotFound from "../pages/NotFound";
+// import NotFound from "../pages/NotFound";
 
 export default function TenantRoutes() {
   return (
