@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: /^https:\/\/(.*\.)?edukate\.in$/,
+  origin: [allowedOrigin , /^https:\/\/(.*\.)?edukate\.in$/],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With","x-tenant"]
