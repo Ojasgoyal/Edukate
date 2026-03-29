@@ -12,43 +12,50 @@ const app = express();
 const allowedOrigins = process.env.CORS_ORIGINS.split(",");
 const RESERVED_SUBDOMAINS = process.env.RESERVED_SUBDOMAINS.split(",");
 
+app.use((req, res, next) => {
+  console.log("REQ:", req.method, req.url);
+  next();
+});
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    
+
     try {
-      // ✅ exact matches (main domain etc.)
+      // ✅ exact matches
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      // ✅ check subdomain
-      const isMainDomain = host === "edukate.in";
-      const hostName = getSubdomain(origin);
-      console.log("Hello, world!");
-      const host = hostName?.host;
-      const subdomain = hostName?.subdomain;
-      
-      console.log(host , subdomain)
-      const isValidTenant =
-        subdomain &&
-        !RESERVED_SUBDOMAINS.includes(subdomain) &&
-        host.endsWith(".edukate.in") || isMainDomain;
 
-      console.log(isValidTenant)
+      const result = getSubdomain(origin);
+
+      const host = result?.host || new URL(origin).hostname;
+      const subdomain = result?.subdomain;
+
+      const isMainDomain = host === "edukate.in";
+
+      const isValidTenant =
+        (subdomain &&
+          !RESERVED_SUBDOMAINS.includes(subdomain) &&
+          host.endsWith(".edukate.in")) ||
+        isMainDomain;
+
+      console.log("CORS:", { origin, host, subdomain, isValidTenant });
+
       if (isValidTenant) {
         return callback(null, true);
       }
+
       return callback(new Error("Not allowed by CORS"));
     } catch (error) {
+      console.error("CORS ERROR:", error);
       return callback(new Error("CORS parsing error"));
     }
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "x-tenant"],
 };
 app.use(cors(corsOptions));
-app.options("/*splat", cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(express.static("public"));
