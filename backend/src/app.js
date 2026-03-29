@@ -15,8 +15,7 @@ const RESERVED_SUBDOMAINS = process.env.RESERVED_SUBDOMAINS.split(",");
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    console.log("CORS check for origin:", origin);
-
+    
     try {
       // ✅ exact matches (main domain etc.)
       if (allowedOrigins.includes(origin)) {
@@ -27,12 +26,14 @@ const corsOptions = {
       const hostName = getSubdomain(origin);
       const host = hostName?.host;
       const subdomain = hostName?.subdomain;
-
+      
+      console.log(host , subdomain)
       const isValidTenant =
         subdomain &&
         !RESERVED_SUBDOMAINS.includes(subdomain) &&
         host.endsWith(".edukate.in") || isMainDomain;
 
+      console.log(isValidTenant)
       if (isValidTenant) {
         return callback(null, true);
       }
