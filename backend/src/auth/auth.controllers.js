@@ -27,10 +27,10 @@ export const register = async (req, res) => {
       if (!slug) {
         return res.status(400).json({ message: "Slug required" });
       }
-      
+
       const normalSlug = slug?.toLowerCase().trim();
 
-      if(RESERVED_SUBDOMAINS.includes(normalSlug)) {
+      if (RESERVED_SUBDOMAINS.includes(normalSlug)) {
         return res.status(400).json({ message: "Reserved Subdomain" });
       }
 
@@ -244,7 +244,9 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "lax",
+    secure: true,
+    sameSite: "None",
+    domain: ".edukate.in", // This MUST match the login cookie exactly
   });
 
   res.status(200).json({ message: "Logged out successfully" });
