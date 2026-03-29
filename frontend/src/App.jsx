@@ -3,7 +3,6 @@ import { TenantContext } from "./context/TenantContext";
 
 import MainRoutes from "./routes/MainRoutes";
 import TenantRoutes from "./routes/TenantRoutes";
-import Loader from "./components/Loader";
 
 export default function App() {
   const { tenant, loading, validTenant } = useContext(TenantContext);
