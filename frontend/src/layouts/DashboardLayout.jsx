@@ -1,27 +1,20 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
 import { SwatchBook } from "lucide-react";
 import { useState } from "react";
 
 export default function DashboardLayout() {
-  const { setUser } = useAuth();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [logoutLoading , setLogoutLoading] = useState(false);
   const [tab, setTab] = useState("dashboard");
   const current =
     "bg-foreground text-background transition-colors duration-300";
 
-  const apiBaseUrl =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-
   const handleLogout = async () => {
-    await axios.post(
-      `${apiBaseUrl}/api/auth/logout`,
-      {},
-      {
-        withCredentials: true,
-      },
-    );
-    setUser(null);
+    setLogoutLoading(true);
+    await logout();
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -61,9 +54,10 @@ export default function DashboardLayout() {
 
           <button
             onClick={handleLogout}
-            className="hover:bg-gray-200 p-2 rounded text-left"
+            className={`hover:bg-gray-200 p-2 rounded text-left`}
+            disabled={logoutLoading}
           >
-            Logout
+            { logoutLoading ? "Logging out..." : "Logout" }
           </button>
         </div>
       </div>

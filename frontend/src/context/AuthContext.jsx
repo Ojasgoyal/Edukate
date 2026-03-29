@@ -23,12 +23,21 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const logout = async () => {
+    try {
+      await axios.post(`${apibase}/api/auth/logout`, {}, { withCredentials: true });
+      setUser(null); // State updates perfectly in sync with the API
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
   useEffect(() => {
     fetchUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, fetchUser }}>
+    <AuthContext.Provider value={{ user, setUser, loading, fetchUser , logout}}>
       {children}
     </AuthContext.Provider>
   );

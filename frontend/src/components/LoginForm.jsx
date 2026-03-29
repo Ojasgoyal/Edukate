@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -31,6 +32,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     setErrorMsg("");
 
     // --- Client-Side JS Validation ---
@@ -73,6 +75,8 @@ export default function Login() {
         error.response?.data?.message || "An error occurred during submission.",
       );
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -143,9 +147,10 @@ export default function Login() {
             )}
             <button
               type="submit"
-              className="w-full bg-foreground text-background py-2 rounded-sm hover:bg-foreground/80 cursor-pointer"
+              className={`w-full bg-foreground text-background py-2 rounded-sm hover:bg-foreground/80 cursor-pointer transition-colors duration-300 ${isLoading ? "cursor-not-allowed opacity-70" : ""}`}
+              disabled={isLoading}
             >
-              {isLogin ? "Login" : "Sign Up"}
+              {isLogin ? (isLoading ? "Logging in..." : "Login") : (isLoading ? "Signing up..." : "Sign Up")}
             </button>
           </form>
 
