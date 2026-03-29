@@ -18,40 +18,7 @@ app.use((req, res, next) => {
 });
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-
-    try {
-      // ✅ exact matches
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      const result = getSubdomain(origin);
-
-      const host = result?.host || new URL(origin).hostname;
-      const subdomain = result?.subdomain;
-
-      const isMainDomain = host === "edukate.in";
-
-      const isValidTenant =
-        (subdomain &&
-          !RESERVED_SUBDOMAINS.includes(subdomain) &&
-          host.endsWith(".edukate.in")) ||
-        isMainDomain;
-
-      console.log("CORS:", { origin, host, subdomain, isValidTenant });
-
-      if (isValidTenant) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
-    } catch (error) {
-      console.error("CORS ERROR:", error);
-      return callback(new Error("CORS parsing error"));
-    }
-  },
+  origin: [...allowedOrigins, /https:\/\/[a-zA-Z0-9-]+\.edukate\.in$/],
   credentials: true,
 };
 app.use(cors(corsOptions));

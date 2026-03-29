@@ -24,10 +24,8 @@ export default function TenantHome() {
           headers: { "x-tenant": tenant },
           withCredentials: true,
         });
-        console.log("Courses fetched:", response.data);
         setCourses(response.data.courses);
       } catch (error) {
-        console.error("Error fetching courses:", error);
         if (error.response?.status === 404) {
           setError("NO_TENANT");
         } else {
