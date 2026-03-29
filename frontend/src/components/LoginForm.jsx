@@ -2,7 +2,6 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Navbar from "../components/navbar/Navbar";
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
