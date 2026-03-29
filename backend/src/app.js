@@ -17,7 +17,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors());
-app.options("/*splat", cors(corsOptions));
+app.options("/*splat", cors());
 
 app.use(express.json());
 app.use(express.static("public"));
