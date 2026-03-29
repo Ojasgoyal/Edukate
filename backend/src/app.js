@@ -9,7 +9,7 @@ import { getSubdomain } from "./utils.js";
 dotenv.config();
 
 const app = express();
-const allowedOrigins = process.env.CORS_ORIGINS.split(",");
+const allowedOrigin = process.env.CORS_ORIGIN
 const RESERVED_SUBDOMAINS = process.env.RESERVED_SUBDOMAINS.split(",");
 
 app.use((req, res, next) => {
@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 const corsOptions = {
-  origin: [...allowedOrigins, /https:\/\/[a-zA-Z0-9-]+\.edukate\.in$/],
+  origin: [allowedOrigin, /https:\/\/[a-zA-Z0-9-]+\.edukate\.in$/],
   credentials: true,
 };
 app.use(cors(corsOptions));
