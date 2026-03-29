@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { SwatchBook } from "lucide-react";
 
 export default function Navbar() {
-  const { user } = useAuth();
+  const user  = localStorage.getItem("user") === true;
 
   return (
     <>
