@@ -17,27 +17,24 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors({
-  origin: (origin, callback) => {
-    // If there's no origin (like a server-to-server call), allow it
-    if (!origin) return callback(null, true);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  
+  // Validate the origin exactly like the CORS logic
+  if (origin && (origin.endsWith(".edukate.in") || origin === "https://edukate.in" || origin === allowedOrigin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, x-tenant");
+  }
 
-    // Check if it ends with .edukate.in or is the main domain
-    const isAllowed = origin === "https://edukate.in" || 
-                      origin.endsWith(".edukate.in") || 
-                      origin.includes("localhost");
+  // Handle preflight (OPTIONS) requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
 
-    if (isAllowed) {
-      // This 'true' tells the CORS library to echo the 'origin' string exactly
-      callback(null, true);
-    } else {
-      callback(new Error("CORS not allowed for this origin"));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "x-tenant"]
-}));
+  next();
+});
 
 app.use(express.json());
 app.use(express.static("public"));
