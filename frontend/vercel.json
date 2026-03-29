@@ -1,5 +1,14 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?<subdomain>.*).yourdomain.com"
+        }
+      ],
+      "destination": "/api/subdomain?subdomain=:subdomain"
+    }
   ]
 }

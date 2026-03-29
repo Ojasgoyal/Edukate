@@ -1,40 +1,16 @@
-import React from 'react'
-import { Route , Routes } from 'react-router-dom'
-import DashboardLayout from "./layouts/DashboardLayout";
+import { useContext } from "react";
+import { TenantContext } from "./context/TenantContext";
 
-import Dashboard from "./pages/Dashboard";
-import Course from "./pages/Course";
-import Courses from "./pages/Courses";
-import CreateCourse from "./pages/CreateCourse";
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-
-import ProtectedRoute from './components/ProtectedRoute';
-import PublicRoute from './components/PublicRoute'
-
+import MainRoutes from "./routes/MainRoutes";
+import TenantRoutes from "./routes/TenantRoutes";
+import Loader from "./components/Loader";
 
 export default function App() {
-  return (
-    <Routes>
-      {/* Dashboard */}
-      <Route path="/" element={<Landing />} />
-      <Route path="/dashboard" element={
-        <ProtectedRoute>
-          <DashboardLayout />
-        </ProtectedRoute>
-      }>
-        <Route index element={<Dashboard />} />
-        <Route path="courses" element={<Courses />} />
-        <Route path="courses/new" element={<CreateCourse />} />
-      </Route>
-      <Route path="/login" element={
-        <PublicRoute>
-          <Login />
-        </PublicRoute>
-      } />
+  const { tenant, loading } = useContext(TenantContext);
 
-      {/* Public Course Page */}
-      <Route path="/course/:slug" element={<Course />} />
-    </Routes>
-  )
+  if (loading) return <Loader />;
+  if (tenant && validTenant === false) {
+  return <><h2>No such Educator {tenant} found</h2></>; // 🔥 Vercel-style 404
+}
+  return tenant ? <TenantRoutes /> : <MainRoutes />;
 }
