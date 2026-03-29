@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
       const res = await axios.get(`${apibase}/api/auth/me`, {
         withCredentials: true,
       });
-      localStorage.setItem("user",true);
+      localStorage.setItem("user", JSON.stringify(res.data?.user));
       setUser(res.data?.user);
     } catch (error) {
       setUser(null);

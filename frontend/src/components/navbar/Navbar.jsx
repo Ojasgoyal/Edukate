@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { SwatchBook } from "lucide-react";
 
 export default function Navbar() {
-  const user  = localStorage.getItem("user") === true;
+  const isUser = localStorage.getItem("user") || null ;
 
   return (
     <>
@@ -18,10 +18,10 @@ export default function Navbar() {
         </div>
         <div>
           <Link
-            to={user ? "/dashboard" : "/login"}
+            to={isUser ? "/dashboard" : "/login"}
             className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm"
           >
-            {user ? "Dashboard" : "Try Now"}
+            {isUser ? "Dashboard" : "Try Now"}
           </Link>
         </div>
       </div>
