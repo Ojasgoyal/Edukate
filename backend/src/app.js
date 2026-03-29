@@ -18,7 +18,21 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: [/^https:\/\/(.*\.)?edukate\.in$/ , allowedOrigin],
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    const isEdukateDomain = /^https:\/\/(.*\.)?edukate\.in$/.test(origin);
+    const isLocalhost = origin.includes("localhost");
+
+    if (isEdukateDomain || isLocalhost) {
+      // SUCCESS: Telling the 'cors' package to echo this EXACT origin back
+      callback(null, true);
+    } else {
+      // FAILURE: Block the request
+      console.error(`CORS Blocked for: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With","x-tenant"]
