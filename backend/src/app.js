@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import connectDB from "./db.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./auth/auth.routes.js";
 import courseRoutes from "./course/course.routes.js";
@@ -26,6 +27,12 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static("public"));
 app.use(cookieParser());
+
+app.use(async (req, res, next) => {
+  await connectDB();
+  console.log("✅ MongoDB Connected (Middleware)");
+  next();
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);

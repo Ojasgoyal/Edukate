@@ -1,13 +1,19 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+
+let isConnected = false; // Track the connection state
 
 const connectDB = async () => {
-    try {
-        await mongoose.connect(`${process.env.MONGO_URI}`)
-        console.log(`✅ MongoDB Connect Successfully`);
-    } catch (error) {
-        console.error("Mongo DB connection Error", error)
-        process.exit(1)
-    }
-}
+  if (isConnected) {
+    return; // Use the cached connection!
+  }
+  
+  try {
+    const db = await mongoose.connect(process.env.MONGO_URI);
+    isConnected = db.connections[0].readyState === 1;
+    console.log("✅ MongoDB Connected Successfully (Serverless)");
+  } catch (error) {
+    console.error("MongoDB connection Error", error);
+  }
+};
 
-export default connectDB
+export default connectDB;
