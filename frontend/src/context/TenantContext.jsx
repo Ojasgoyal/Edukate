@@ -22,7 +22,7 @@ export const TenantProvider = ({ children }) => {
 
     const checkTenant = async () => {
       try {
-        const valid = await axios.get(`${apiBaseUrl}/api/auth/tenant` , { headers: { "x-tenant": t } }); // uses x-tenant
+        const valid = await axios.get(`${apiBaseUrl}/api/auth/tenant` , { headers: { "x-tenant": t } });
         setValidTenant(true);
       } catch {
         setValidTenant(false);
