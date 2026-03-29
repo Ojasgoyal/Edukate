@@ -9,39 +9,44 @@ import { getSubdomain } from "./utils.js";
 dotenv.config();
 
 const app = express();
-  const allowedOrigins = process.env.CORS_ORIGINS.split(",");
-  const RESERVED_SUBDOMAINS = process.env.RESERVED_SUBDOMAINS.split(",");
+const allowedOrigins = process.env.CORS_ORIGINS.split(",");
+const RESERVED_SUBDOMAINS = process.env.RESERVED_SUBDOMAINS.split(",");
 
-  const corsOptions = {
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
 
-        // ✅ exact matches (main domain etc.)
-        if (allowedOrigins.includes(origin)) {
-          return callback(null, true);
-        }
+    try {
+      // ✅ exact matches (main domain etc.)
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-        // ✅ check subdomain
-        const hostName = getSubdomain(origin);
-        const host = hostName?.host;
-        const subdomain = hostName?.subdomain;
+      // ✅ check subdomain
+      const isMainDomain = host === "edukate.in";
+      const hostName = getSubdomain(origin);
+      const host = hostName?.host;
+      const subdomain = hostName?.subdomain;
 
-        const isValidTenant =
-          subdomain &&
-          !RESERVED_SUBDOMAINS.includes(subdomain) &&
-          host.endsWith(".edukate.in");
+      const isValidTenant =
+        subdomain &&
+        !RESERVED_SUBDOMAINS.includes(subdomain) &&
+        host.endsWith(".edukate.in") || isMainDomain;
 
-        if (isValidTenant) {
-          return callback(null, true);
-        }
-
-        return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-tenant"],
-  };
-  app.use(cors(corsOptions));
+      if (isValidTenant) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    } catch (error) {
+      return callback(new Error("CORS parsing error"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-tenant"],
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(express.static("public"));
