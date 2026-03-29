@@ -21,7 +21,7 @@ const corsOptions = {
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-
+      console.log("CORS check for origin:", origin);
       // ✅ check subdomain
       const isMainDomain = host === "edukate.in";
       const hostName = getSubdomain(origin);
