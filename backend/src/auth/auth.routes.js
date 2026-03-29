@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { login, register , logout } from "./auth.controllers.js";
 import { extractTenant , teacherOnly , protect  , requireTenant , teacherPreviewAccess , validateStudentAccess } from "../middlewares/auth.middleware.js";
-import { tenantExists } from "./tenant.controllers.js";
 
 const router = Router();
 
