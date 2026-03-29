@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { login, register , logout } from "./auth.controllers.js";
-import { extractTenant , teacherOnly , protect  , requireTenant , teacherPreviewAccess , validateStudentAccess } from "../middlewares/auth.middleware.js";
+import { extractTenant , teacherOnly , protect  , requireTenant , teacherPreviewAccess , validateStudentAccess, optionalAuth } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -9,7 +9,7 @@ router.post("/login", extractTenant , login);
 
 router.get(
   "/me",
-  protect,
+  optionalAuth,
   extractTenant,
   teacherPreviewAccess,
   validateStudentAccess,
