@@ -6,7 +6,7 @@ export const getSubdomain = (origin) => {
     const parts = host.split(".");
 
     if (parts.length >= 3) {
-      return parts[0]; // "youteacher"
+      return { host, subdomain: parts[0] }; // { host: "youteacher.edukate.in", subdomain: "youteacher" }
     }
 
     return null;

@@ -5,8 +5,9 @@ import jwt from "jsonwebtoken";
 const sendToken = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, // true in production
-    sameSite: "lax",
+    secure: true, // true in production
+    sameSite: "None",
+    domain: ".edukate.in",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };

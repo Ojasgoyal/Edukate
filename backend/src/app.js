@@ -22,12 +22,12 @@ const corsOptions = {
       }
 
       // ✅ check subdomain
-      const subdomain = getSubdomain(origin);
+      const { host , subdomain } = getSubdomain(origin);
 
       const isValidTenant =
         subdomain &&
         !RESERVED_SUBDOMAINS.includes(subdomain) &&
-        /\.edukate\.in$/.test(origin);
+        host.endsWith(".edukate.in");
 
       if (isValidTenant) {
         return callback(null, true);
