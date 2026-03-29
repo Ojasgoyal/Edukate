@@ -14,22 +14,26 @@ const sendToken = (res, token) => {
 export const register = async (req, res) => {
   try {
     const { name, email, password, role, slug } = req.body;
-
+    const RESERVED_SUBDOMAINS = ["api", "admin", "www"];
     if (!name || !email || !password || !role) {
       return res.status(400).json({
         message: "All fields are required",
       });
     }
+
     // ---------------- TEACHER ----------------
     if (role === "teacher") {
       if (!slug) {
         return res.status(400).json({ message: "Slug required" });
       }
-
+      
       const normalSlug = slug?.toLowerCase().trim();
 
+      if(RESERVED_SUBDOMAINS.includes(normalSlug)) {
+        return res.status(400).json({ message: "Reserved Subdomain" });
+      }
 
-            // check email already exists in same tenant
+      // check email already exists in same tenant
       const existingEmail = await User.findOne({
         email,
         role: "teacher",

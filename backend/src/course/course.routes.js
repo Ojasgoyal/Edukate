@@ -7,7 +7,7 @@ const router = Router();
 router.post("/create", protect, teacherOnly ,  createCourse);
 router.get("/mycourses", protect, teacherOnly, getMyCourses);
 router.get("/edit/:slug", protect, teacherOnly, getCourse);
-router.patch("/edit/:slug", protect, teacherOnly, updateCourse);
+router.put("/edit/:slug", protect, teacherOnly, updateCourse);
 router.delete("/delete/:slug", protect, teacherOnly, deleteCourse);
 
 
