@@ -6,9 +6,9 @@ import TenantRoutes from "./routes/TenantRoutes";
 import Loader from "./components/Loader";
 
 export default function App() {
-  const { tenant, loading } = useContext(TenantContext);
+  const { tenant, loading, validTenant } = useContext(TenantContext);
 
-  if (loading) return <Loader />;
+  if (loading) return <><div>Loading...</div></>;
   if (tenant && validTenant === false) {
   return <><h2>No such Educator {tenant} found</h2></>; // 🔥 Vercel-style 404
 }
