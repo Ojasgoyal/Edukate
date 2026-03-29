@@ -21,7 +21,7 @@ app.use((req, res, next) => {
   const origin = req.headers.origin;
   
   // Validate the origin exactly like the CORS logic
-  if (origin && (origin.endsWith(".edukate.in") || origin === "https://edukate.in" || origin === allowedOrigin)) {
+  if (origin && (origin.endsWith(".edukate.in") || origin === "https://edukate.in")) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
