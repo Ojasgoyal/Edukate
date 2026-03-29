@@ -17,11 +17,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const corsOptions = {
-  origin: [allowedOrigin, /https:\/\/[a-zA-Z0-9-]+\.edukate\.in$/],
-  credentials: true,
-};
-app.use(cors(corsOptions));
+app.use(cors());
 app.options("/*splat", cors(corsOptions));
 
 app.use(express.json());
