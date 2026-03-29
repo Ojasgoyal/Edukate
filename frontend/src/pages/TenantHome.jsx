@@ -10,12 +10,14 @@ export default function TenantHome() {
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (!tenant) return;
+    
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+    useEffect(() => {
+      if (!tenant) return;
+      console.log("hello");
 
     const fetchData = async () => {
       try {

@@ -13,7 +13,7 @@ const allowedOrigins = process.env.CORS_ORIGINS.split(",");
 const RESERVED_SUBDOMAINS = process.env.RESERVED_SUBDOMAINS.split(",");
 
 app.use((req, res, next) => {
-  console.log("REQ:", req.method, req.url);
+  console.log("req:", req.method, req.url);
   next();
 });
 
@@ -70,6 +70,7 @@ app.get("/", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
+  console.error("🔥 ERROR:", err); // ADD THIS
   res.status(err.statuscode || 500).json({
     success: false,
     message: err.message || "Internal Server Error",
