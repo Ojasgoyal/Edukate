@@ -17,7 +17,7 @@ export default function TenantHome() {
     
     useEffect(() => {
       if (!tenant) return;
-      console.log("hello");
+      console.log(tenant);
 
     const fetchData = async () => {
       try {
