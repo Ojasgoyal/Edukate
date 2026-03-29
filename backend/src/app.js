@@ -18,24 +18,25 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: function (origin, callback) {
+  origin: (origin, callback) => {
+    // If there's no origin (like a server-to-server call), allow it
     if (!origin) return callback(null, true);
 
-    const isEdukateDomain = /^https:\/\/(.*\.)?edukate\.in$/.test(origin);
-    const isLocalhost = origin.includes("localhost");
+    // Check if it ends with .edukate.in or is the main domain
+    const isAllowed = origin === "https://edukate.in" || 
+                      origin.endsWith(".edukate.in") || 
+                      origin.includes("localhost");
 
-    if (isEdukateDomain || isLocalhost) {
-      // SUCCESS: Telling the 'cors' package to echo this EXACT origin back
+    if (isAllowed) {
+      // This 'true' tells the CORS library to echo the 'origin' string exactly
       callback(null, true);
     } else {
-      // FAILURE: Block the request
-      console.error(`CORS Blocked for: ${origin}`);
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error("CORS not allowed for this origin"));
     }
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With","x-tenant"]
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "x-tenant"]
 }));
 
 app.use(express.json());
