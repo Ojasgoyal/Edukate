@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { SwatchBook } from "lucide-react";
@@ -6,9 +6,10 @@ import { useState } from "react";
 
 export default function DashboardLayout() {
   const { setUser } = useAuth();
-
-  const [tab , setTab] = useState("dashboard");
-  const current = "bg-foreground text-background transition-colors duration-300";
+  const navigate = useNavigate();
+  const [tab, setTab] = useState("dashboard");
+  const current =
+    "bg-foreground text-background transition-colors duration-300";
 
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
@@ -22,6 +23,7 @@ export default function DashboardLayout() {
       },
     );
     setUser(null);
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -34,7 +36,11 @@ export default function DashboardLayout() {
         </Link>
         <div className="flex flex-col justify-between h-100 text-sm font-semibold">
           <nav className="flex flex-col gap-2">
-            <Link to="/dashboard" className={`p-2 rounded ${tab === "dashboard" ? current : "hover:bg-gray-200"}`} onClick={() => setTab("dashboard")}>
+            <Link
+              to="/dashboard"
+              className={`p-2 rounded ${tab === "dashboard" ? current : "hover:bg-gray-200"}`}
+              onClick={() => setTab("dashboard")}
+            >
               Dashboard
             </Link>
 
