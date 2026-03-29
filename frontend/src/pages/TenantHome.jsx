@@ -21,6 +21,7 @@ export default function TenantHome() {
       try {
         const response = await axios.get(`${apiBaseUrl}/api/courses`, {
           headers: { "x-tenant": tenant },
+          withCredentials: true,
         });
 
         setCourses(response.data.courses);
