@@ -18,7 +18,9 @@ app.use((req, res, next) => {
 
 app.use(cors({
   origin: /^https:\/\/(.*\.)?edukate\.in$/,
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With","x-tenant"]
 }));
 
 app.use(express.json());
