@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./auth/auth.routes.js";
 import courseRoutes from "./course/course.routes.js";
 import enrollRoutes from "./enrollments/enroll.routes.js";
-import { getSubdomain } from "./utils.js";
 dotenv.config();
 
 const app = express();
