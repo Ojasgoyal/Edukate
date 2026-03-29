@@ -16,8 +16,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors());
-app.options("/*splat", cors());
+app.use(cors({
+  origin: /^https:\/\/(.*\.)?edukate\.in$/,
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(express.static("public"));
