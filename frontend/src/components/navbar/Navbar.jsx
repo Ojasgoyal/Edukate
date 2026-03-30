@@ -8,13 +8,13 @@ export default function Navbar() {
   
   useEffect(() => {
     const user = localStorage.getItem("user");
-    if (user) {
+    if (user !== null) {
       setIsUser(true)
       ;
     } else {
       setIsUser(false);
     }
-  }, []);
+  }, [user]);
 
   return (
     <>
