@@ -4,14 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { SwatchBook } from "lucide-react";
 
 export default function Navbar() {
-  const { user , loading } = useAuth();
-    if (loading) {
-    return (
-      <div className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm opacity-70">
-        Loading...
-      </div>
-    );
-  }
+  const { user, loading } = useAuth();
 
   return (
     <>
@@ -23,14 +16,22 @@ export default function Navbar() {
             edukate
           </div>
         </div>
-        <div>
-          <Link
-            to={user ? "/dashboard" : "/login"}
-            className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm"
-          >
-            {user ? "Dashboard" : "Try Now"}
-          </Link>
-        </div>
+        {loading ? (
+          <>
+            <div className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm opacity-70">
+              Loading...
+            </div>
+          </>
+        ) : (
+          <div>
+            <Link
+              to={user ? "/dashboard" : "/login"}
+              className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm"
+            >
+              {user ? "Dashboard" : "Try Now"}
+            </Link>
+          </div>
+        )}
       </div>
     </>
   );
