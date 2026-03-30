@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { SwatchBook } from "lucide-react";
 
 export default function Navbar() {
-  const isUser = localStorage.getItem("user") || null ;
+  const [ isUser, setIsUser ] = useState(false);
+  
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setIsUser(true)
+      ;
+    } else {
+      setIsUser(false);
+    }
+  }, []);
 
   return (
     <>
