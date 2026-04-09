@@ -11,7 +11,7 @@ const app = express();
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || origin === process.env.CORS_ORIGIN) {
+    if (!origin || origin === process.env.CORS_ORIGIN || origin.includes("localhost:5173")) {
       return callback(null, true);
     }
     return callback(new Error("Not allowed by CORS"));
@@ -30,8 +30,13 @@ app.use(cookieParser())
 import connectDB from "./db.js";
 
 app.use(async (req, res, next) => {
-  await connectDB();
-  next();
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("DB connection error:", err);
+    res.status(500).json({ message: "Database connection failed" });
+  }
 });
 
 app.use((req, res, next) => {
