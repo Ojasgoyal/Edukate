@@ -6,7 +6,7 @@ const AuthContext = createContext();
 const apibase = import.meta.env.VITE_API_BASE_URL ?? "";
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchUser = async () => {
@@ -14,10 +14,10 @@ export function AuthProvider({ children }) {
       const res = await axios.get(`${apibase}/api/auth/me`, {
         withCredentials: true,
       });
-      localStorage.setItem("user", JSON.stringify(res.data?.user));
-      setUser(res.data?.user);
+      localStorage.setItem("user", JSON.stringify(res.data));
+      setUserData(res.data);
     } catch (error) {
-      setUser(null);
+      setUserData(null);
     } finally {
       setLoading(false);
     }
@@ -25,8 +25,12 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await axios.post(`${apibase}/api/auth/logout`, {}, { withCredentials: true });
-      setUser(null); // State updates perfectly in sync with the API
+      await axios.post(
+        `${apibase}/api/auth/logout`,
+        {},
+        { withCredentials: true },
+      );
+      setUserData(null); // State updates perfectly in sync with the API
       localStorage.removeItem("user");
     } catch (error) {
       console.error("Logout failed", error);
@@ -38,7 +42,15 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, fetchUser , logout}}>
+    <AuthContext.Provider
+      value={{
+        userData,
+        setUserData,
+        loading,
+        fetchUser,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

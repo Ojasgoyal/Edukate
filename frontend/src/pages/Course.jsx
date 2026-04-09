@@ -8,7 +8,7 @@ import axios from "axios";
 export default function PublicCourse() {
   const { courseSlug } = useParams();
   const { tenant } = useContext(TenantContext);
-  const { user } = useAuth();
+  const { userData } = useAuth();
   const navigate = useNavigate();
 
   const [data, setData] = useState(null);
@@ -40,7 +40,7 @@ export default function PublicCourse() {
   const { course, access } = data;
 
   const handleEnrollClick = () => {
-    if (!user) {
+    if (!userData?.user) {
       navigate("/login"); // Redirect to login if not authenticated
     } else {
       console.log("Proceed to checkout/enrollment logic");

@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { SwatchBook } from "lucide-react";
 
 export default function Navbar() {
-  const { user, loading } = useAuth();
+  const { userData, loading } = useAuth();
 
   return (
     <>
@@ -25,10 +25,10 @@ export default function Navbar() {
         ) : (
           <div>
             <Link
-              to={user ? "/dashboard" : "/login"}
+              to={userData?.user ? "/dashboard" : "/login"}
               className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm"
             >
-              {user ? "Dashboard" : "Try Now"}
+              {userData?.user ? "Dashboard" : "Try Now"}
             </Link>
           </div>
         )}

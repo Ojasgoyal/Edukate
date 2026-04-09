@@ -11,7 +11,7 @@ const fetcher = async (url) => {
 };
 
 export default function Courses() {
-  const { user } = useAuth();
+  const { userData } = useAuth();
 
   const { data: courses, error, isLoading } = useSWR(
     `${apiBaseUrl}/api/courses/mycourses`,

@@ -6,7 +6,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 export default function TenantHome() {
-  const { user } = useAuth();
   const { tenant } = useContext(TenantContext);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
 
