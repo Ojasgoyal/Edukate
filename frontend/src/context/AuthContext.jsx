@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const {tenant} = useContext(TenantContext);
+  const tenant = useContext(TenantContext)?.tenant;
   const header = tenant ? { "x-tenant": tenant } : {};
 
   const fetchUser = async () => {
