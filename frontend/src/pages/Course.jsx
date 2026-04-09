@@ -13,7 +13,7 @@ export default function PublicCourse() {
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -22,6 +22,7 @@ export default function PublicCourse() {
           headers: { "x-tenant": tenant },
           withCredentials: true,
         });
+        console.log(res.data);
         setData(res.data);
       } catch (err) {
         console.error("Course fetch error", err);

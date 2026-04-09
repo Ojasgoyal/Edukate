@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const fetcher = async (url) => {
   const response = await axios.get(url, { withCredentials: true });

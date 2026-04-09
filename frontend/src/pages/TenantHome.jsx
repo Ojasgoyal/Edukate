@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 export default function TenantHome() {
   const { user } = useAuth();
   const { tenant } = useContext(TenantContext);
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
 
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);

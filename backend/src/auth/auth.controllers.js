@@ -2,13 +2,13 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const sendToken = (res, token) => {
+const sendToken = (res, token, options = {}) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: true, // true in production
+    secure: true,
     sameSite: "None",
-    domain: ".edukate.in",
     maxAge: 7 * 24 * 60 * 60 * 1000,
+    ...options,
   });
 };
 
@@ -77,7 +77,9 @@ export const register = async (req, res) => {
         { expiresIn: "7d" },
       );
 
-      sendToken(res, token);
+      sendToken(res, token, {
+        domain: ".edukate.in",
+      });
 
       return res.status(201).json({
         user: {
@@ -226,7 +228,15 @@ export const login = async (req, res) => {
       { expiresIn: "7d" },
     );
 
-    sendToken(res, token);
+    if (role === "teacher") {
+      sendToken(res, token, {
+        domain: ".edukate.in",
+      });
+    } else {
+      sendToken(res, token, {
+        domain: `${tenantSlug}.edukate.in`,
+      });
+    }
 
     return res.status(200).json({
       user: {
@@ -242,11 +252,19 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
+  const tenant = req.tenant;
+  const tenantSlug = req.tenant?.toLowerCase().trim();
+
+  const domain =
+    req.user?.role === "teacher"
+      ? ".edukate.in"
+      : `${tenantSlug}.edukate.in`;
+
   res.clearCookie("token", {
     httpOnly: true,
     secure: true,
     sameSite: "None",
-    domain: ".edukate.in", // This MUST match the login cookie exactly
+    domain,
   });
 
   res.status(200).json({ message: "Logged out successfully" });

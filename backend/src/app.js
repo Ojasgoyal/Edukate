@@ -1,65 +1,50 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import connectDB from "./db.js";
-import cookieParser from "cookie-parser";
+import express from "express"
+import dotenv from "dotenv"
+import cors from "cors"
+import cookieParser from "cookie-parser"
 import authRoutes from "./auth/auth.routes.js";
 import courseRoutes from "./course/course.routes.js";
-import enrollRoutes from "./enrollments/enroll.routes.js";
+import enrollRoutes from "./enrollments/enroll.routes.js"
 dotenv.config();
 
 const app = express();
-const allowedOrigin = process.env.CORS_ORIGIN
-const RESERVED_SUBDOMAINS = process.env.RESERVED_SUBDOMAINS.split(",");
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || origin === process.env.CORS_ORIGIN) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-tenant"],
+};
+
+app.use(cors(corsOptions));
+
+app.use(express.json())
+app.use(express.static("public"))
+app.use(cookieParser())
 
 app.use((req, res, next) => {
   console.log("req:", req.method, req.url);
   next();
 });
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  
-  // Validate the origin exactly like the CORS logic
-  if (origin && (origin.endsWith("edukate.in"))) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, x-tenant");
-  }
-
-  // Handle preflight (OPTIONS) requests
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
-
-app.use(express.json());
-app.use(express.static("public"));
-app.use(cookieParser());
-
-app.use(async (req, res, next) => {
-  await connectDB();
-  console.log("✅ MongoDB Connected (Middleware)");
-  next();
-});
-
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
-app.use("/api/enroll", enrollRoutes);
+app.use("/api/enroll" , enrollRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Edukate API running...");
+    res.send("Edukate API running...");
 });
 
 app.use((err, req, res, next) => {
-  console.error("🔥 ERROR:", err); // ADD THIS
-  res.status(err.statuscode || 500).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-  });
+    res.status(err.statuscode || 500).json({
+        success: false,
+        message: err.message || "Internal Server Error"
+    });
 });
 
-export default app;
+export default app
