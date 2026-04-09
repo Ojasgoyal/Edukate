@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useTenant } from "./TenantContext";
+import { TenantContext } from "./TenantContext";
 
 const AuthContext = createContext();
 
