@@ -17,6 +17,7 @@ export default function PublicCourse() {
 
   useEffect(() => {
     const fetchCourse = async () => {
+      
       try {
         const res = await axios.get(`${apiBaseUrl}/api/courses/course/${courseSlug}`, {
           headers: { "x-tenant": tenant },
@@ -31,6 +32,7 @@ export default function PublicCourse() {
       }
     };
     if (tenant && courseSlug) fetchCourse();
+    if(!tenant) console.log("tenant not loaded"); // Stop loading if tenant is not available
   }, [courseSlug, tenant, apiBaseUrl]);
 
   if (loading) return <div className="p-10 animate-pulse">Loading course...</div>;
