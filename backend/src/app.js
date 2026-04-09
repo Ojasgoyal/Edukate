@@ -27,6 +27,13 @@ app.use(express.json())
 app.use(express.static("public"))
 app.use(cookieParser())
 
+import connectDB from "./db.js";
+
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
+
 app.use((req, res, next) => {
   console.log("req:", req.method, req.url);
   next();

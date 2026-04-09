@@ -1,19 +1,25 @@
 import mongoose from "mongoose";
 
-let isConnected = false; // Track the connection state
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 const connectDB = async () => {
-  if (isConnected) {
-    return; // Use the cached connection!
+  if (cached.conn) {
+    return cached.conn;
   }
-  
-  try {
-    const db = await mongoose.connect(process.env.MONGO_URI);
-    isConnected = db.connections[0].readyState === 1;
-    console.log("✅ MongoDB Connected Successfully (Serverless)");
-  } catch (error) {
-    console.error("MongoDB connection Error", error);
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGO_URI).then((mongoose) => {
+      console.log("✅ MongoDB Connected");
+      return mongoose;
+    });
   }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 };
 
 export default connectDB;
