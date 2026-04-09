@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
       const res = await axios.get(`${apibase}/api/auth/me`, {
         withCredentials: true,
       });
-      localStorage.setItem("user", JSON.stringify(res.data));
+      localStorage.setItem("userData", JSON.stringify(res.data));
       setUserData(res.data);
     } catch (error) {
       setUserData(null);
@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
         { withCredentials: true },
       );
       setUserData(null); // State updates perfectly in sync with the API
-      localStorage.removeItem("user");
+      localStorage.removeItem("userData");
     } catch (error) {
       console.error("Logout failed", error);
     }

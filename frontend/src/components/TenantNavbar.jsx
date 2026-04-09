@@ -6,7 +6,9 @@ export default function TenantNavbar({ tenantName }) {
   // We'll check for 'student' auth here later
   const { userData } = useAuth();
 
-  const { user, tenant, isDemo } = userData;
+  const user  = userData?.user;
+  const tenant = userData?.tenant;
+  const isDemo = userData?.isDemo;
 
   const isStudent = user?.role === "student" && tenant === tenantName;
 
