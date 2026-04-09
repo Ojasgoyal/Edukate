@@ -17,7 +17,7 @@ export default function TenantRoutes() {
       <Route
         path="/login"
         element={
-          <PublicRoute>
+          <PublicRoute mode="tenant">
             <Studentlogin />
           </PublicRoute>
         }

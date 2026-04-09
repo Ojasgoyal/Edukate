@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
         withCredentials: true,
         headers: header,
       });
-      localStorage.setItem("userData", JSON.stringify(res.data));
+      localStorage.setItem("user", JSON.stringify(res.data.user));
       setUserData(res.data);
     } catch (error) {
       setUserData(null);
@@ -33,7 +33,10 @@ export function AuthProvider({ children }) {
       await axios.post(
         `${apibase}/api/auth/logout`,
         {},
-        { withCredentials: true },
+        {
+          withCredentials: true,
+          headers: header,
+        },
       );
       setUserData(null); // State updates perfectly in sync with the API
       localStorage.removeItem("userData");
@@ -43,8 +46,10 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    if (tenant === undefined) return; // wait for tenant
+
     fetchUser();
-  }, []);
+  }, [tenant]);
 
   return (
     <AuthContext.Provider

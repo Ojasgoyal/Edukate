@@ -6,11 +6,14 @@ export default function TenantNavbar({ tenantName }) {
   // We'll check for 'student' auth here later
   const { userData } = useAuth();
 
-  const user  = userData?.user;
+  const user = userData?.user;
   const tenant = userData?.tenant;
   const isDemo = userData?.isDemo;
 
   const isStudent = user?.role === "student" && tenant === tenantName;
+
+  const isTeacherOnOwnTenant =
+    user?.role === "teacher" && user?.slug === tenantName;
 
   return (
     <nav className="fixed top-0 w-full h-16 bg-background border-b z-50 flex items-center justify-between px-6">

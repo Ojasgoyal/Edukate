@@ -32,7 +32,7 @@ export default function MainRoutes() {
       <Route
         path="/login"
         element={
-          <PublicRoute>
+          <PublicRoute mode="root">
             <Login />
           </PublicRoute>
         }
