@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { useTenant } from "./TenantContext";
 
 const AuthContext = createContext();
 
@@ -9,10 +10,14 @@ export function AuthProvider({ children }) {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const {tenant} = useContext(TenantContext);
+  const header = tenant ? { "x-tenant": tenant } : {};
+
   const fetchUser = async () => {
     try {
       const res = await axios.get(`${apibase}/api/auth/me`, {
         withCredentials: true,
+        headers: header,
       });
       localStorage.setItem("userData", JSON.stringify(res.data));
       setUserData(res.data);

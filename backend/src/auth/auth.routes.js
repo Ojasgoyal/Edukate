@@ -11,8 +11,8 @@ router.get(
   "/me",
   optionalAuth,
   extractTenant,
-  teacherPreviewAccess,
   validateStudentAccess,
+  teacherPreviewAccess,
   (req, res) => {
     res.json({
       user: req.user,
