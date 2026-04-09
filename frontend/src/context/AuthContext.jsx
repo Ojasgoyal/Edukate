@@ -11,10 +11,11 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const tenant = useContext(TenantContext)?.tenant;
-  const header = tenant ? { "x-tenant": tenant } : {};
 
   const fetchUser = async () => {
     try {
+      const header = tenant ? { "x-tenant": tenant } : {};
+      
       const res = await axios.get(`${apibase}/api/auth/me`, {
         withCredentials: true,
         headers: header,
@@ -46,8 +47,6 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    if (tenant === undefined) return; // wait for tenant
-
     fetchUser();
   }, [tenant]);
 
