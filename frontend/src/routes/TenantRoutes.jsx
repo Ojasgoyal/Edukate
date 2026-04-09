@@ -8,7 +8,7 @@ export default function TenantRoutes() {
   return (
     <Routes>
       <Route path="/" element={<TenantHome />} />
-      <Route path="/course/:slug" element={<Course />} />
+      <Route path="/course/:courseSlug" element={<Course />} />
 
       {/* catch invalid routes */}
       {/* <Route path="*" element={<NotFound />} /> */}

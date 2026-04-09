@@ -1,18 +1,19 @@
 export const getTenantFromHost = () => {
-  const host = window.location.hostname; 
-  // e.g. tenant1.yourdomain.com
-
+  const host = window.location.hostname;
   const parts = host.split(".");
 
-  // localhost case
-  if (host.includes("localhost")) {
-    return null; // or custom logic
+  // localhost handling
+  if (host.endsWith("localhost")) {
+    if (parts.length > 1) {
+      return parts[0]; // abc.localhost → abc
+    }
+    return null;
   }
+
   if (parts[0] === "www" || parts[0] === "api") return null;
 
-  // production
   if (parts.length > 2) {
-    return parts[0]; // tenant1
+    return parts[0];
   }
 
   return null;

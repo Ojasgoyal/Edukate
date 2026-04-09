@@ -62,10 +62,10 @@ export default function TenantHome() {
               [1, 2, 3].map((n) => (
                 <div key={n} className="h-64 bg-muted animate-pulse rounded-lg" />
               ))
-            ) : courses.length === 0 ? (
+            ) : courses?.length === 0 ? (
               <p className="text-muted-foreground">No courses available at the moment.</p>
             ) : (
-              courses.map((course) => (
+              courses?.map((course) => (
                 <Link 
                   key={course._id} 
                   to={`/course/${course.courseSlug}`}
