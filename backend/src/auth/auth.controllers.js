@@ -181,6 +181,10 @@ export const login = async (req, res) => {
           message: "No teacher found",
         });
       }
+
+      if(!req.tenant){
+        req.tenant = user.slug; // set tenant for student login later
+      }
     }
 
     // ---------------- STUDENT ----------------
