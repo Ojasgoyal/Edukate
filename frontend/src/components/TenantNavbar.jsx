@@ -5,14 +5,14 @@ import { useContext } from "react";
 import { TenantContext } from "../context/TenantContext";
 
 export default function TenantNavbar({ tenantName }) {
-  // We'll check for 'student' auth here later
-  const { userData } = useAuth();
+  // Grab the global loading state from AuthContext instead of local state
+  const { userData, loading } = useAuth();
   const tenant = useContext(TenantContext)?.tenant;
 
   const user = userData?.user;
   const responseTenant = userData?.user?.slug;
   const isDemo = user?.role === "teacher" && tenant === responseTenant;
-
+  
   const isStudent = user?.role === "student" && tenant === tenantName;
 
   return (
@@ -23,15 +23,23 @@ export default function TenantNavbar({ tenantName }) {
           {tenantName}
         </span>
       </div>
-      {!isDemo && (
-        <div className="flex gap-4 items-center">
-          <Link
-            to={isStudent ? "/mycourses" : "/login"}
-            className="bg-foreground text-background px-4 py-2 rounded-sm text-sm font-medium"
-          >
-            {isStudent ? "My Courses" : "Student Login"}
-          </Link>
-        </div>
+      
+      {/* Wait to render the buttons until auth loading is finished */}
+      {!loading && (
+        !isDemo ? (
+          <div className="flex gap-4 items-center">
+            <Link
+              to={isStudent ? "/mycourses" : "/login"}
+              className="bg-foreground text-background px-4 py-2 rounded-sm text-sm font-medium"
+            >
+              {isStudent ? "My Courses" : "Student Login"}
+            </Link>
+          </div>
+        ) : (
+          <div className="flex gap-4 items-center">
+            <span className="text-sm font-medium">Demo Mode</span>
+          </div>
+        )
       )}
     </nav>
   );
