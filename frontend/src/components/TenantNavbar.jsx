@@ -1,19 +1,26 @@
 import { Link } from "react-router-dom";
 import { SwatchBook } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { useContext } from "react";
+import { useState , useContext } from "react";
 import { TenantContext } from "../context/TenantContext";
 
 export default function TenantNavbar() {
   // Grab the global loading state from AuthContext instead of local state
-  const { userData, loading } = useAuth();
+  const { userData, loading, logout } = useAuth();
   const tenant = useContext(TenantContext)?.tenant;
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   const user = userData?.user;
   const responseTenant = userData?.user?.slug;
   const isDemo = user?.role === "teacher" && tenant === responseTenant;
 
   const isStudent = user?.role === "student" && tenant === user?.slug;
+
+  const handleStudentLogout = async () => {
+    setLogoutLoading(true);
+    await logout();
+    setLogoutLoading(false)
+  };
 
   return (
     <nav className="fixed top-0 w-full h-16 bg-background border-b z-50 flex items-center justify-between px-6">
@@ -28,12 +35,18 @@ export default function TenantNavbar() {
       {!loading &&
         (!isDemo ? (
           <div className="flex gap-4 items-center">
-            <Link
-              to={isStudent ? "/mycourses" : "/login"}
-              className="bg-foreground text-background px-4 py-2 rounded-sm text-sm font-medium"
-            >
-              {isStudent ? "My Courses" : "Student Login"}
-            </Link>
+            {isStudent ? (
+              <button onClick={handleStudentLogout} disabled={logoutLoading}>
+                { logoutLoading ? "Logging out..." : "Logout" }
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="bg-foreground text-background px-4 py-2 rounded-sm text-sm font-medium"
+              >
+                Student Login
+              </Link>
+            )}
           </div>
         ) : (
           <div className="flex gap-4 items-center">
