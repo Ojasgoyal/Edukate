@@ -11,7 +11,7 @@ const app = express();
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || origin === process.env.CORS_ORIGIN || origin.includes("localhost:5173")) {
+    if (!origin || origin === process.env.CORS_ORIGIN || origin.includes("localhost:5173") || origin.endsWith("edukate.in")) {
       return callback(null, true);
     }
     return callback(new Error("Not allowed by CORS"));
