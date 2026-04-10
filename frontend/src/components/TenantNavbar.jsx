@@ -1,14 +1,17 @@
 import { Link } from "react-router-dom";
 import { SwatchBook } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useContext } from "react";
+import { TenantContext } from "../context/TenantContext";
 
 export default function TenantNavbar({ tenantName }) {
   // We'll check for 'student' auth here later
   const { userData } = useAuth();
+  const tenant = useContext(TenantContext)?.tenant;
 
   const user = userData?.user;
-  const tenant = userData?.tenant;
-  const isDemo = userData?.isDemo;
+  const responseTenant = userData?.user?.slug;
+  const isDemo = user?.role === "teacher" && tenant === responseTenant;
 
   const isStudent = user?.role === "student" && tenant === tenantName;
 
