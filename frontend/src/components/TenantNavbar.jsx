@@ -3,11 +3,13 @@ import { SwatchBook } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useState , useContext } from "react";
 import { TenantContext } from "../context/TenantContext";
+import { useNavigate } from "react-router-dom";
 
 export default function TenantNavbar() {
   // Grab the global loading state from AuthContext instead of local state
   const { userData, loading, logout } = useAuth();
   const tenant = useContext(TenantContext)?.tenant;
+  const navigate = useNavigate();
   const [logoutLoading, setLogoutLoading] = useState(false);
 
   const user = userData?.user;
