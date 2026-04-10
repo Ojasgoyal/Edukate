@@ -22,6 +22,12 @@ export const register = async (req, res) => {
       });
     }
 
+    const domain =
+      process.env.NODE_ENV === "production"
+        ? req.user?.role === "teacher"
+          ? ".edukate.in"
+          : `${tenantSlug}.edukate.in`
+        : undefined;
     // ---------------- TEACHER ----------------
     if (role === "teacher") {
       if (!slug) {
@@ -77,8 +83,9 @@ export const register = async (req, res) => {
         { expiresIn: "7d" },
       );
 
+
       sendToken(res, token, {
-        domain: ".edukate.in",
+        domain,
       });
 
       return res.status(201).json({
@@ -139,7 +146,9 @@ export const register = async (req, res) => {
         { expiresIn: "7d" },
       );
 
-      sendToken(res, token);
+      sendToken(res, token, {
+        domain,
+      });
 
       return res.status(201).json({
         user: {
@@ -182,7 +191,7 @@ export const login = async (req, res) => {
         });
       }
 
-      if(!req.tenant){
+      if (!req.tenant) {
         req.tenant = user.slug; // set tenant for student login later
       }
     }
@@ -232,13 +241,20 @@ export const login = async (req, res) => {
       { expiresIn: "7d" },
     );
 
+    const domain =
+      process.env.NODE_ENV === "production"
+        ? req.user?.role === "teacher"
+          ? ".edukate.in"
+          : `${tenantSlug}.edukate.in`
+        : undefined;
+
     if (role === "teacher") {
       sendToken(res, token, {
-        domain: ".edukate.in",
+        domain,
       });
     } else {
       sendToken(res, token, {
-        domain: `${tenantSlug}.edukate.in`,
+        domain,
       });
     }
 
@@ -259,9 +275,11 @@ export const logout = (req, res) => {
   const tenantSlug = req.tenant?.toLowerCase().trim();
 
   const domain =
-    req.user?.role === "teacher"
-      ? ".edukate.in"
-      : `${tenantSlug}.edukate.in`;
+    process.env.NODE_ENV === "production"
+      ? req.user?.role === "teacher"
+        ? ".edukate.in"
+        : `${tenantSlug}.edukate.in`
+      : undefined;
 
   res.clearCookie("token", {
     httpOnly: true,

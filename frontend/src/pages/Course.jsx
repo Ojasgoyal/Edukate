@@ -40,7 +40,7 @@ export default function PublicCourse() {
   const { course, access } = data;
 
   const handleEnrollClick = () => {
-    if (!userData?.user) {
+    if (!userData?.user || userData.user.slug !== tenant) {
       navigate("/login"); // Redirect to login if not authenticated
     } else {
       console.log("Proceed to checkout/enrollment logic");
