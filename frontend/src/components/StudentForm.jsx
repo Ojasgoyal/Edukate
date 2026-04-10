@@ -1,4 +1,4 @@
-import { useState , useContext } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -9,7 +9,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
 
-  const { tenant  } = useContext(TenantContext);
+  const { tenant } = useContext(TenantContext);
 
   const { fetchUser } = useAuth();
 
@@ -87,7 +87,9 @@ export default function Login() {
     <>
       <div className="w-lg h-fit mx-auto my-10 p-10 bg-background border border-foreground/10 shadow-sm rounded-sm flex flex-col items-center">
         <h1 className="text-2xl font-bold mb-6">
-          {isLogin ? `Login to ${capTenant} on Edukate` : `Register on ${capTenant} on Edukate`}
+          {isLogin
+            ? `Login to ${capTenant} on Edukate`
+            : `Register on ${capTenant} on Edukate`}
         </h1>
 
         {errorMsg && (

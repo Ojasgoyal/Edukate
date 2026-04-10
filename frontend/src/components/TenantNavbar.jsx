@@ -12,7 +12,7 @@ export default function TenantNavbar() {
   const user = userData?.user;
   const responseTenant = userData?.user?.slug;
   const isDemo = user?.role === "teacher" && tenant === responseTenant;
-  
+
   const isStudent = user?.role === "student" && tenant === user?.slug;
 
   return (
@@ -23,10 +23,10 @@ export default function TenantNavbar() {
           {tenant}
         </span>
       </div>
-      
+
       {/* Wait to render the buttons until auth loading is finished */}
-      {!loading && (
-        !isDemo ? (
+      {!loading &&
+        (!isDemo ? (
           <div className="flex gap-4 items-center">
             <Link
               to={isStudent ? "/mycourses" : "/login"}
@@ -39,8 +39,7 @@ export default function TenantNavbar() {
           <div className="flex gap-4 items-center">
             <span className="text-sm font-medium">Demo Mode</span>
           </div>
-        )
-      )}
+        ))}
     </nav>
   );
 }
