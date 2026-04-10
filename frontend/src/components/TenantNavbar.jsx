@@ -36,7 +36,7 @@ export default function TenantNavbar() {
         (!isDemo ? (
           <div className="flex gap-4 items-center">
             {isStudent ? (
-              <button onClick={handleStudentLogout} disabled={logoutLoading}>
+              <button className={`bg-foreground text-background px-4 py-2 rounded-sm text-sm font-medium`} onClick={handleStudentLogout} disabled={logoutLoading}>
                 { logoutLoading ? "Logging out..." : "Logout" }
               </button>
             ) : (

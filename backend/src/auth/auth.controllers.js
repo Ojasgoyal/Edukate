@@ -22,12 +22,15 @@ export const register = async (req, res) => {
       });
     }
 
+    const tenantSlug = req.tenant?.toLowerCase().trim();
+
     const domain =
       process.env.NODE_ENV === "production"
         ? role === "teacher"
           ? ".edukate.in"
           : `${tenantSlug}.edukate.in`
         : undefined;
+
     // ---------------- TEACHER ----------------
     if (role === "teacher") {
       if (!slug) {
