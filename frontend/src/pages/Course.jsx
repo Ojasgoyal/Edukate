@@ -15,23 +15,26 @@ export default function PublicCourse() {
   const [loading, setLoading] = useState(true);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
 
+  const fetchCourse = async () => {
+    try {
+      const res = await axios.get(
+        `${apiBaseUrl}/api/courses/course/${courseSlug}`,
+        {
+          headers: { "x-tenant": tenant },
+          withCredentials: true,
+        },
+      );
+      setData(res.data);
+    } catch (err) {
+      console.error("Course fetch error", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchCourse = async () => {
-      try {
-        const res = await axios.get(
-          `${apiBaseUrl}/api/courses/course/${courseSlug}`,
-          {
-            headers: { "x-tenant": tenant },
-            withCredentials: true,
-          },
-        );
-        setData(res.data);
-      } catch (err) {
-        console.error("Course fetch error", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchCourse();
+
     if (tenant && courseSlug) fetchCourse();
     if (!tenant) console.log("tenant not loaded"); // Stop loading if tenant is not available
   }, [courseSlug, tenant, apiBaseUrl]);
@@ -60,10 +63,14 @@ export default function PublicCourse() {
       );
 
       if (res.status === 201 || res.status === 200) {
-        setData((prev) => ({
-          ...prev,
-          access: { ...prev.access, isEnrolled: true, canViewLectures: true },
-        }));
+        const refreshedRes = await axios.get(
+          `${apiBaseUrl}/api/courses/course/${courseSlug}`,
+          {
+            headers: { "x-tenant": tenant },
+            withCredentials: true,
+          },
+        );
+        setData(refreshedRes.data);
       }
     } catch (error) {
       console.error(
