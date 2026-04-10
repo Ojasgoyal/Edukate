@@ -31,6 +31,9 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
+
+      const header = tenant ? { "x-tenant": tenant } : {};
+      
       await axios.post(
         `${apibase}/api/auth/logout`,
         {},

@@ -256,7 +256,6 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  const tenant = req.tenant;
   const tenantSlug = req.tenant?.toLowerCase().trim();
 
   const domain =

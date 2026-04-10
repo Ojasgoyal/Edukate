@@ -22,6 +22,6 @@ router.get(
   }
 );
 
-router.post("/logout", protect ,logout);
+router.post("/logout", extractTenant , protect ,logout);
 
 export default router;
