@@ -152,3 +152,35 @@ export const enroll = async (req, res) => {
     });
   }
 };
+
+// Add this to the bottom of the file
+export const getTenantEnrollments = async (req, res) => {
+  try {
+    // Teachers are strictly scoped by their own slug
+    const tenant = req.user.slug;
+
+    // Fetch all enrollments for this tenant, most recent first
+    const enrollments = await Enrollments.find({ tenant })
+      .populate("studentId", "name email")
+      .populate("courseId", "title courseSlug")
+      .sort({ createdAt: -1 });
+
+    const formattedEnrollments = enrollments.map((e) => ({
+      id: e._id,
+      studentName: e.studentId?.name || "Unknown",
+      studentEmail: e.studentId?.email || "Unknown",
+      courseId: e.courseId?._id,
+      courseTitle: e.courseId?.title || "Unknown Course",
+      enrolledAt: e.createdAt,
+    }));
+
+    return res.status(200).json({
+      count: formattedEnrollments.length,
+      enrollments: formattedEnrollments,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Server Error",
+    });
+  }
+};
