@@ -12,9 +12,6 @@ export default function TenantNavbar({ tenantName }) {
 
   const isStudent = user?.role === "student" && tenant === tenantName;
 
-  const isTeacherOnOwnTenant =
-    user?.role === "teacher" && user?.slug === tenantName;
-
   return (
     <nav className="fixed top-0 w-full h-16 bg-background border-b z-50 flex items-center justify-between px-6">
       <div className="flex items-center gap-2">

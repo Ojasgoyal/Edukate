@@ -23,11 +23,8 @@ export default function PublicRoute({ children, mode = "default" }) {
     const isStudentOnSameTenant =
       user?.role === "student" && responseTenant === currentTenant;
 
-    const isTeacherOnOwnTenant =
-      user?.role === "teacher" && isDemo === true;
-
     // 🚫 block login page
-    if (isStudentOnSameTenant || isTeacherOnOwnTenant) {
+    if (isStudentOnSameTenant || isDemo) {
       return <Navigate to="/" replace />;
     }
 
