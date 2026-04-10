@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 export default function () {
   return (
-    <div className='flex flex-col sm:flex-row justify-center sm:justify-between pt-32 pb-16 gap-6 sm:gap-0'>
+    <div className='max-w-6xl mx-auto flex flex-col sm:flex-row justify-center sm:justify-between pt-32 pb-16 gap-6 sm:gap-0'>
         <div className='flex flex-col items-center sm:items-start'>
             <div className='bg-amber-100 w-fit text-amber-800 text-center rounded-full text-xs md:text-sm px-4 py-1'>
                 Now in beta — free for early educators
