@@ -38,7 +38,7 @@ export default function TenantHome() {
 
   return (
     <div className="min-h-screen bg-background">
-      <TenantNavbar tenantName={tenant} />
+      <TenantNavbar />
 
       <main className="max-w-6xl mx-auto pt-24 px-6">
         {/* Hero Section */}

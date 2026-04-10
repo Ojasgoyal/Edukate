@@ -24,7 +24,7 @@ export const register = async (req, res) => {
 
     const domain =
       process.env.NODE_ENV === "production"
-        ? req.user?.role === "teacher"
+        ? role === "teacher"
           ? ".edukate.in"
           : `${tenantSlug}.edukate.in`
         : undefined;
@@ -242,7 +242,7 @@ export const login = async (req, res) => {
 
     const domain =
       process.env.NODE_ENV === "production"
-        ? req.user?.role === "teacher"
+        ? user?.role === "teacher"
           ? ".edukate.in"
           : `${user.slug}.edukate.in`
         : undefined;
