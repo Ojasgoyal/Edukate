@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, replace } from "react-router-dom";
 import { SwatchBook } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useState , useContext } from "react";
@@ -20,6 +20,7 @@ export default function TenantNavbar() {
     setLogoutLoading(true);
     await logout();
     setLogoutLoading(false)
+    navigate("/" , { replace: true });
   };
 
   return (
