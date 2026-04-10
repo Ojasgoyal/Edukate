@@ -199,7 +199,6 @@ export const login = async (req, res) => {
     // ---------------- STUDENT ----------------
     if (role === "student") {
       const tenantSlug = req.tenant?.toLowerCase().trim();
-
       if (!tenantSlug) {
         return res.status(400).json({
           message: "Tenant required",
@@ -245,7 +244,7 @@ export const login = async (req, res) => {
       process.env.NODE_ENV === "production"
         ? req.user?.role === "teacher"
           ? ".edukate.in"
-          : `${tenantSlug}.edukate.in`
+          : `${user.slug}.edukate.in`
         : undefined;
 
     if (role === "teacher") {
