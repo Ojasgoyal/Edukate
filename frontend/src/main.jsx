@@ -7,11 +7,11 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import { TenantProvider } from "./context/TenantContext";
 
 createRoot(document.getElementById("root")).render(
-  <AuthProvider>
-    <TenantProvider>
+  <TenantProvider>
+    <AuthProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </TenantProvider>
-  </AuthProvider>,
+    </AuthProvider>
+  </TenantProvider>,
 );
