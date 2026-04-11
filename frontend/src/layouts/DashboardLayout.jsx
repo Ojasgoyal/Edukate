@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { SwatchBook } from "lucide-react";
 import { useState } from "react";
@@ -6,16 +6,23 @@ import { useState } from "react";
 export default function DashboardLayout() {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const [logoutLoading , setLogoutLoading] = useState(false);
-  const [tab, setTab] = useState("dashboard");
-  const current =
-    "bg-foreground text-background transition-colors duration-300";
+  const location = useLocation(); // Hook to get current path
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  
+  const currentStyles = "bg-foreground text-background transition-colors duration-300";
 
   const handleLogout = async () => {
     setLogoutLoading(true);
     await logout();
     navigate("/login", { replace: true });
   };
+
+  // Derive active states from the URL
+  const path = location.pathname;
+  const isDashboard = path === "/dashboard" || path === "/dashboard/";
+  const isCreateCourse = path === "/dashboard/courses/new" || path === "/dashboard/courses/new/";
+  // Apply "Courses" tab active state if in courses list OR editing a course
+  const isCourses = path.startsWith("/dashboard/courses") && !isCreateCourse;
 
   return (
     <div className="flex h-screen">
@@ -29,24 +36,21 @@ export default function DashboardLayout() {
           <nav className="flex flex-col gap-2">
             <Link
               to="/dashboard"
-              className={`p-2 rounded ${tab === "dashboard" ? current : "hover:bg-gray-200"}`}
-              onClick={() => setTab("dashboard")}
+              className={`p-2 rounded ${isDashboard ? currentStyles : "hover:bg-gray-200"}`}
             >
               Dashboard
             </Link>
 
             <Link
               to="/dashboard/courses"
-              className={`p-2 rounded ${tab === "Courses" ? current : "hover:bg-gray-200"}`}
-              onClick={() => setTab("Courses")}
+              className={`p-2 rounded ${isCourses ? currentStyles : "hover:bg-gray-200"}`}
             >
               Courses
             </Link>
 
             <Link
               to="/dashboard/courses/new"
-              className={`p-2 rounded ${tab === "Create Course" ? current : "hover:bg-gray-200"}`}
-              onClick={() => setTab("Create Course")}
+              className={`p-2 rounded ${isCreateCourse ? currentStyles : "hover:bg-gray-200"}`}
             >
               Create Course
             </Link>
@@ -54,10 +58,10 @@ export default function DashboardLayout() {
 
           <button
             onClick={handleLogout}
-            className={`hover:bg-gray-200 p-2 rounded text-left`}
+            className={`hover:bg-gray-200 p-2 rounded text-left mt-auto`}
             disabled={logoutLoading}
           >
-            { logoutLoading ? "Logging out..." : "Logout" }
+            {logoutLoading ? "Logging out..." : "Logout"}
           </button>
         </div>
       </div>

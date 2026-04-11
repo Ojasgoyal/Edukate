@@ -2,17 +2,24 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-// Import the ArrowUpRight icon
 import { ArrowUpRight } from "lucide-react"; 
 
 export default function EditCourse() {
-  const apibaseurl = import.meta.env.VITE_API_BASE_URL ?? ""; // Fixed to VITE_API_BASE_URL to match your other files
+  const apibaseurl = import.meta.env.VITE_API_BASE_URL ?? ""; 
   const { slug } = useParams();
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  
+  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => {
+      setToast({ show: false, message: "", type: "success" });
+    }, 3000);
+  };
 
   useEffect(() => {
     fetchCourse();
@@ -20,12 +27,10 @@ export default function EditCourse() {
 
   const fetchCourse = async () => {
     try {
-      const { data } = await axios.get(`${apibaseurl}/api/courses/edit/${slug}`, {
-        withCredentials: true
-      });
+      const { data } = await axios.get(`${apibaseurl}/api/courses/edit/${slug}`, { withCredentials: true });
       setCourse(data.course);
     } catch (err) {
-      setError("Failed to load course details.");
+      showToast("Failed to load course details.", "error");
     } finally {
       setLoading(false);
     }
@@ -60,14 +65,11 @@ export default function EditCourse() {
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
-    setError("");
     try {
-      await axios.put(`${apibaseurl}/api/courses/edit/${slug}`, course, {
-        withCredentials: true
-      });
-      alert("Course updated successfully!");
+      await axios.put(`${apibaseurl}/api/courses/edit/${slug}`, course, { withCredentials: true });
+      showToast("Course updated successfully!", "success");
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update course.");
+      showToast(err.response?.data?.message || "Failed to update course.", "error");
     } finally {
       setSaving(false);
     }
@@ -76,33 +78,28 @@ export default function EditCourse() {
   const handleDelete = async () => {
     if(!window.confirm("Are you sure you want to delete this course? This cannot be undone.")) return;
     try {
-      await axios.delete(`${apibaseurl}/api/courses/delete/${slug}`, {
-        withCredentials: true
-      });
+      await axios.delete(`${apibaseurl}/api/courses/delete/${slug}`, { withCredentials: true });
       navigate("/dashboard/courses");
     } catch (err) {
-      setError("Failed to delete course.");
+      showToast("Failed to delete course.", "error");
     }
   }
 
   if (loading) return <div>Loading...</div>;
-  if (!course) return <div>{error || "Course not found"}</div>;
+  if (!course) return <div>Course not found</div>;
 
-  // Determine base domain dynamically for local vs production
   const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const baseDomain = isLocalhost ? "localhost:5173" : "edukate.in";
   const protocol = isLocalhost ? "http://" : "https://";
   
-  // Construct the public subdomain link
   const publicCourseUrl = `${protocol}${course.tenant}.${baseDomain}/course/${course.courseSlug}`;
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto p-4 relative">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Edit Course: {course.title}</h2>
         
         <div className="flex items-center gap-3">
-          {/* New View Course Button */}
           <a 
             href={publicCourseUrl}
             target="_blank"
@@ -118,8 +115,6 @@ export default function EditCourse() {
           </button>
         </div>
       </div>
-
-      {error && <div className="p-3 mb-4 bg-red-100 text-red-700 rounded">{error}</div>}
 
       <form onSubmit={handleSave} className="space-y-8">
         {/* Basic Details Section */}
@@ -184,6 +179,12 @@ export default function EditCourse() {
           {saving ? "Saving Changes..." : "Save All Changes"}
         </button>
       </form>
+
+      {toast.show && (
+        <div className={`fixed bottom-6 right-6 px-6 py-4 rounded shadow-lg text-white font-medium z-50 transition-all ${toast.type === "success" ? "bg-green-600" : "bg-red-600"}`}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }

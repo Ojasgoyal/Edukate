@@ -11,7 +11,15 @@ export default function CreateCourse() {
     slug: "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  
+  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => {
+      setToast({ show: false, message: "", type: "success" });
+    }, 3000);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,83 +28,58 @@ export default function CreateCourse() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     try {
       await axios.post(
         `${apibaseurl}/api/courses/create`,
         { ...formData, lectures: [] },
-        {
-          withCredentials: true,
-          // Assuming your auth context sets headers globally, otherwise add x-tenant here
-        },
+        { withCredentials: true }
       );
-      // Redirect to the edit page for this specific course slug
-      navigate(`/dashboard/courses/edit/${formData.slug}`);
+      
+      showToast("Course created successfully! Redirecting...", "success");
+      
+      setTimeout(() => {
+        navigate(`/dashboard/courses/edit/${formData.slug}`);
+      }, 1500);
+
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong.");
+      showToast(err.response?.data?.message || "Something went wrong.", "error");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white border shadow-sm rounded-lg">
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-white border shadow-sm rounded-lg relative">
       <h2 className="text-2xl font-bold mb-6">Create New Course</h2>
-      {error && (
-        <div className="p-3 mb-4 bg-red-100 text-red-700 rounded">{error}</div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Course Title</label>
-          <input
-            type="text"
-            name="title"
-            required
-            value={formData.title}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            placeholder="e.g. Advanced Mathematics"
-          />
+          <input type="text" name="title" required value={formData.title} onChange={handleChange} className="w-full p-2 border rounded" placeholder="e.g. Advanced Mathematics" />
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-1">Course Slug</label>
-          <input
-            type="text"
-            name="slug"
-            required
-            value={formData.slug}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            placeholder="e.g. basic-math"
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            This will be used in the URL: /course/basic-math
-          </p>
+          <input type="text" name="slug" required value={formData.slug} onChange={handleChange} className="w-full p-2 border rounded" placeholder="e.g. basic-math" />
+          <p className="text-xs text-gray-500 mt-1">This will be used in the URL: /course/basic-math</p>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-1">Description</label>
-          <textarea
-            name="description"
-            rows="4"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            placeholder="What is this course about?"
-          ></textarea>
+          <textarea name="description" rows="4" value={formData.description} onChange={handleChange} className="w-full p-2 border rounded" placeholder="What is this course about?"></textarea>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-foreground text-background font-semibold py-2 rounded hover:opacity-90 disabled:opacity-50"
-        >
+        <button type="submit" disabled={loading} className="w-full bg-foreground text-background font-semibold py-2 rounded hover:opacity-90 disabled:opacity-50">
           {loading ? "Creating..." : "Create Course"}
         </button>
       </form>
+
+      {toast.show && (
+        <div className={`fixed bottom-6 right-6 px-6 py-4 rounded shadow-lg text-white font-medium z-50 transition-all ${toast.type === "success" ? "bg-green-600" : "bg-red-600"}`}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }
