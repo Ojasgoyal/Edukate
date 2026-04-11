@@ -120,9 +120,26 @@ export default function EditCourse() {
         {/* Basic Details Section */}
         <div className="bg-white p-6 border shadow-sm rounded-lg space-y-4">
           <h3 className="text-lg font-semibold border-b pb-2">Basic Details</h3>
-          <div>
-            <label className="block text-sm font-medium mb-1">Title</label>
-            <input type="text" name="title" value={course.title} onChange={handleDetailsChange} className="w-full p-2 border rounded" required />
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-sm font-medium mb-1">Title</label>
+              <input type="text" name="title" value={course.title} onChange={handleDetailsChange} className="w-full p-2 border rounded" required />
+            </div>
+
+            {/* Add Price Input */}
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-sm font-medium mb-1">Price (₹)</label>
+              <input 
+                type="number" 
+                name="price" 
+                min="0" 
+                value={course.price || 0} 
+                onChange={handleDetailsChange} 
+                className="w-full p-2 border rounded" 
+                required 
+              />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Description</label>

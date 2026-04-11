@@ -4,7 +4,7 @@ import Enrollments from "../models/Enrollments.js";
 
 export const createCourse = async (req, res) => {
   try {
-    const { title, description, slug, lectures } = req.body;
+    const { title, description, slug, lectures , price } = req.body;
     const teacherId = req.user.id;
     const tenant = req.user.slug.toLowerCase().trim();
     const courseSlug = slug.toLowerCase().trim();
@@ -38,6 +38,7 @@ export const createCourse = async (req, res) => {
       description,
       courseSlug,
       lectures,
+      price: price || 0, 
       teacherId,
       tenant,
       isPublished: false,
@@ -97,7 +98,7 @@ export const updateCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    const allowedFields = ["title", "description", "lectures", "isPublished"];
+    const allowedFields = ["title", "description", "lectures", "isPublished", "price" ];
 
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {
@@ -215,6 +216,7 @@ export const getCourseDetails = async (req, res) => {
       description: course.description,
       slug: course.courseSlug,
       isPublished: course.isPublished,
+      price: course.price || 0,
     };
 
     if (canViewLectures) {

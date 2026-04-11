@@ -26,7 +26,13 @@ const courseSchema = new mongoose.Schema(
     tenant: {
       type: String,
       required: true,
-      lowercase:true
+      lowercase: true,
+    },
+
+    price: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
 
     lectures: [

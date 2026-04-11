@@ -44,7 +44,7 @@ export default function PublicCourse() {
   if (!data) return <div className="p-10 text-center">Course not found.</div>;
 
   const { course, access } = data;
-
+  console.log("Course Data:", data); // Debug log to check course and access details
   const handleEnrollClick = async () => {
     if (!userData?.user || userData.user.slug !== tenant) {
       navigate("/login"); // Redirect to login if not authenticated
@@ -101,13 +101,20 @@ export default function PublicCourse() {
 
           {/* Action Buttons based on Access */}
           {!access.isOwner && !access.isEnrolled && (
-            <button
-              onClick={handleEnrollClick}
-              className="bg-foreground text-background px-8 py-3 rounded-md font-bold hover:opacity-90 transition-all"
-              disabled={loading}
-            >
-              Enroll Now
-            </button>
+            <div className="flex gap-10 justify-baseline items-center">
+              <button
+                onClick={handleEnrollClick}
+                className="bg-foreground text-background px-6 py-2 rounded-md font-bold hover:opacity-90 transition-all"
+                disabled={loading}
+              >
+                {course.price > 0 ? `Enroll Now` : "Enroll for Free"}
+              </button>
+              {course.price > 0 && (
+                <div className=" text-xl text-center text-foreground font-extrabold">
+                  Price: ₹{course.price}
+                </div>
+              )}
+            </div>
           )}
 
           {access.isOwner && (
