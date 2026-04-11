@@ -7,6 +7,7 @@ import Courses from "../pages/Courses";
 import CreateCourse from "../pages/CreateCourse";
 import Landing from "../pages/Landing";
 import Login from "../pages/Login";
+import EditCourse from "../pages/EditCourse";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
@@ -27,7 +28,10 @@ export default function MainRoutes() {
         <Route index element={<Dashboard />} />
         <Route path="courses" element={<Courses />} />
         <Route path="courses/new" element={<CreateCourse />} />
+        <Route path="courses/edit/:slug" element={<EditCourse />} />
       </Route>
+
+   
 
       <Route
         path="/login"

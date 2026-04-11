@@ -46,12 +46,12 @@ export default function Courses() {
           <div className="flex">
             {courses.map((course) => (
               <Link
-                className="w-52 h-32 bg-muted rounded-sm flex flex-col justify-end p-4 gap-2 mr-4 transition-transform hover:scale-105"
+                className="w-64 h-48 bg-background/80 shadow border border-px border-chart-1 rounded-sm flex flex-col justify-end p-8 gap-4 mr-4 transition-transform hover:scale-102"
                 key={course._id}
-                to={`/courses/${course.courseSlug}`}
+                to={`/dashboard/courses/edit/${course.courseSlug}`}
               >
-                <div className="font-medium truncate">Course: {course.title}</div>
-                <div className="text-sm line-clamp-2">Description: {course.description}</div>
+                <div className="font-medium truncate">{course.title}</div>
+                <div className="text-sm truncate line-clamp-2">{course.description}</div>
               </Link>
             ))}
           </div>
