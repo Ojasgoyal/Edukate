@@ -8,7 +8,9 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 z-100 flex bg-white/70 backdrop-blur-lg h-16 max-w-6xl w-full items-center justify-between px-4 border">
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 z-100 bg-white/70 backdrop-blur-lg h-16 w-full px-4 border-b">
+      <div className="flex max-w-6xl w-full items-center justify-between h-16 mx-auto">
+
         <div className="flex gap-1 items-center">
           <SwatchBook />
 
@@ -33,6 +35,7 @@ export default function Navbar() {
           </div>
         )}
       </div>
+            </div>
     </>
   );
 }

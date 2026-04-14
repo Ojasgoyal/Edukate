@@ -27,7 +27,7 @@ export default function DashboardLayout() {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="w-54 bg-background border shadow-lg rounded-sm p-4 space-y-10">
+      <div className="w-36 md:w-54 bg-background border shadow-lg rounded-sm p-4 space-y-10">
         <Link to="/" className="flex pt-2 pl-2 gap-1 items-center h-fit">
           <SwatchBook />
           <h2 className="text-2xl font-dm-serif font-bold">edukate</h2>
