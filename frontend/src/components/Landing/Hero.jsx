@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { HashLink as Link } from 'react-router-hash-link';
 
 export default function () {
   return (
@@ -18,10 +18,10 @@ export default function () {
                 course builder, student management, payments without a single line of code.
             </div>
             <div className='flex gap-4 my-6'>
-                <Link to="#get-started" className="bg-foreground text-background hover:bg-chart-3 text-sm font-medium py-3 px-6 rounded-sm transition duration-300">
+                <Link  to="/login" className="bg-foreground text-background hover:bg-chart-3 text-sm font-medium py-3 px-6 rounded-sm transition duration-300">
                     Start for free
                 </Link>
-                <Link to="#learn-more" className="bg-background text-foreground hover:text-chart-3 text-sm font-medium py-3 px-6 rounded-sm border border-chart-1 hover:border-chart-3 transition-all duration-300">
+                <Link smooth to="#learn-more" className="bg-background text-foreground hover:text-chart-3 text-sm font-medium py-3 px-6 rounded-sm border border-chart-1 hover:border-chart-3 transition-all duration-300">
                     See how it works
                 </Link>
             </div>

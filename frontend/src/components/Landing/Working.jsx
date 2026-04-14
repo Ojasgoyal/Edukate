@@ -3,7 +3,7 @@ import React from "react";
 export default function Working() {
   return (
     <>
-      <div className="bg-primary py-30 px-7">
+      <div id="learn-more" className="bg-primary py-30 px-7">
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-end gap-5 mb-16">
             <div>

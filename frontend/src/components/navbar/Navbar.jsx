@@ -9,33 +9,32 @@ export default function Navbar() {
   return (
     <>
       <div className="fixed top-0 left-1/2 -translate-x-1/2 z-100 bg-white/70 backdrop-blur-lg h-16 w-full px-4 border-b">
-      <div className="flex max-w-6xl w-full items-center justify-between h-16 mx-auto">
+        <div className="flex max-w-6xl w-full items-center justify-between h-16 mx-auto">
+          <div className="flex gap-1 items-center">
+            <SwatchBook />
 
-        <div className="flex gap-1 items-center">
-          <SwatchBook />
-
-          <div className="text-2xl font-bold font-dm-serif tracking-wide">
-            edukate
+            <div className="text-2xl font-bold font-dm-serif tracking-wide">
+              edukate
+            </div>
           </div>
+          {loading ? (
+            <>
+              <div className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm opacity-70">
+                Loading...
+              </div>
+            </>
+          ) : (
+            <div>
+              <Link
+                to={userData?.user ? "/dashboard" : "/login"}
+                className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm"
+              >
+                {userData?.user ? "Dashboard" : "Try Now"}
+              </Link>
+            </div>
+          )}
         </div>
-        {loading ? (
-          <>
-            <div className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm opacity-70">
-              Loading...
-            </div>
-          </>
-        ) : (
-          <div>
-            <Link
-              to={userData?.user ? "/dashboard" : "/login"}
-              className="bg-foreground text-background px-4 py-2 font-medium rounded-sm text-sm"
-            >
-              {userData?.user ? "Dashboard" : "Try Now"}
-            </Link>
-          </div>
-        )}
       </div>
-            </div>
     </>
   );
 }
