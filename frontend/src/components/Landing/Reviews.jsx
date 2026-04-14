@@ -3,7 +3,7 @@ import React from "react";
 export default function Reviews() {
   return (
     <>
-      <section className="flex mx-auto px-6 md:px-20 py-16 md:py-25 flex-col">
+      <section className="flex mx-auto px-6 md:px-20 py-16 max-w-7xl md:py-25 flex-col">
         <div className="mb-20">
           <div className="text-chart-2 text-xs font-semibold uppercase mb-4">
             Educators love it

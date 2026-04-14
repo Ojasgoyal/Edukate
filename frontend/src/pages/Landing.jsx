@@ -4,6 +4,7 @@ import Hero from "../components/Landing/Hero";
 import Features from "../components/Landing/Features";
 import Working from "../components/Landing/Working";
 import Reviews from "../components/Landing/Reviews";
+import Pricing from "../components/Landing/Pricing";
 
 export default function Landing() {
   return (
@@ -15,6 +16,7 @@ export default function Landing() {
           <Features />
           <Working />
           <Reviews />
+          <Pricing/>
         </main>
       </div>
     </>

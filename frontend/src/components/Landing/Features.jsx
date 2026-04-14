@@ -4,7 +4,7 @@ export default function Features() {
   return (
     <>
       <div className="max-w-6xl mx-auto flex flex-col gap-10 my-20">
-        <div>
+        <div className="px-6 md:px-0">
           <p className="uppercase text-[11px] mb-4 leading-2 text-chart-2 font-medium">
             Features
           </p>
