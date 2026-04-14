@@ -3,7 +3,7 @@ import React from "react";
 export default function Reviews() {
   return (
     <>
-      <section className="flex mx-auto px-20 py-25 flex-col">
+      <section className="flex mx-auto px-6 md:px-20 py-16 md:py-25 flex-col">
         <div className="mb-20">
           <div className="text-chart-2 text-xs font-semibold uppercase mb-4">
             Educators love it
@@ -13,7 +13,7 @@ export default function Reviews() {
             <em className="italic text-chart-2">real teachers.</em>
           </h3>
         </div>
-        <div className="flex gap-5">
+        <div className="flex flex-col lg:flex-row gap-5">
           <div className="flex flex-col gap-6 border border-foreground/20 rounded-sm px-8 py-8">
             <div className="text-orange-400">★ ★ ★ ★ ★</div>
             <div className="text-sm leading-6 text-foreground font-light">
@@ -75,8 +75,8 @@ export default function Reviews() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-px bg-foreground/20 mt-16">
-            <div className="bg-muted flex flex-col justify-center items-center gap-4 px-10 py-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/20 mt-16">
+            <div className="bg-muted flex flex-col justify-center items-center gap-4 px-4 py-8 md:px-10 md:py-12">
                 <h3 className="text-4xl font-dm-serif">200+</h3>
                 <div className="text-muted-foreground text-xs ">Educators</div>
             </div>

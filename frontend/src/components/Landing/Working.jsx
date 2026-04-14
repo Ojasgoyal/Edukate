@@ -10,8 +10,8 @@ export default function Working() {
               <div className="text-[10px] font-semibold uppercase mb-3 text-chart-2 tracking-widest">
                 How it works
               </div>
-              <h2 className="font-dm-serif text-[42px] text-background leading-tight">
-                From zero to <br />
+              <h2 className="font-dm-serif text-3xl md:text-[42px] text-background leading-tight">
+                From zero to <br className="hidden md:block" />
                 <em className="text-orange-400 italic"> teaching online </em>
                 <br /> in four steps.
               </h2>
