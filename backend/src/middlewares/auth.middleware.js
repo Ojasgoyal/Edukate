@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const resolveUser = (req) => {
+const resolveUserFromTokens = (req) => {
   let finalUser = null;
 
   if (req.cookies?.teacher_token) {
