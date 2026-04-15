@@ -9,8 +9,8 @@ router.post("/login", extractTenant , login);
 
 router.get(
   "/me",
-  optionalAuth,
   extractTenant,
+  optionalAuth,
   validateStudentAccess,
   teacherPreviewAccess,
   (req, res) => {

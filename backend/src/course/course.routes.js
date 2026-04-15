@@ -12,7 +12,7 @@ router.delete("/delete/:slug", protect, teacherOnly, deleteCourse);
 
 
 router.get("/", extractTenant , requireTenant , getCourses);
-router.get("/course/:slug" , optionalAuth , extractTenant , requireTenant , teacherPreviewAccess , getCourseDetails)
+router.get("/course/:slug" ,extractTenant ,  optionalAuth , requireTenant , teacherPreviewAccess , getCourseDetails)
 
 
 

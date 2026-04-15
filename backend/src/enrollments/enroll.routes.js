@@ -7,8 +7,8 @@ const router = Router()
 
 
 // Student Routes
-router.get("/courses" , protect , extractTenant , requireTenant , validateStudentAccess , getCourses)
-router.post("/buy/:courseId" , protect , extractTenant , requireTenant , validateStudentAccess , enroll)
+router.get("/courses" ,extractTenant ,  protect , requireTenant , validateStudentAccess , getCourses)
+router.post("/buy/:courseId" ,extractTenant ,  protect , requireTenant , validateStudentAccess , enroll)
 
 //Teacher Routes
 router.get("/enrollments/:courseId" , protect , teacherOnly , getEnrollments)

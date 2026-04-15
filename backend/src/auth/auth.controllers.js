@@ -2,8 +2,8 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const sendToken = (res, token, options = {}) => {
-  res.cookie("token", token, {
+const sendToken = (res, cookieName, token, options = {}) => {
+  res.cookie(cookieName, token, {
     httpOnly: true,
     secure: true,
     sameSite: "None",
@@ -76,7 +76,7 @@ export const register = async (req, res) => {
         slug: normalSlug,
       });
 
-      const token = jwt.sign(
+      const teacher_token = jwt.sign(
         {
           id: user._id,
           role: user.role,
@@ -86,8 +86,7 @@ export const register = async (req, res) => {
         { expiresIn: "7d" },
       );
 
-
-      sendToken(res, token, {
+      sendToken(res, "teacher_token", teacher_token, {
         domain,
       });
 
@@ -139,7 +138,7 @@ export const register = async (req, res) => {
         slug: tenantSlug,
       });
 
-      const token = jwt.sign(
+      const student_token = jwt.sign(
         {
           id: user._id,
           role: user.role,
@@ -149,7 +148,7 @@ export const register = async (req, res) => {
         { expiresIn: "7d" },
       );
 
-      sendToken(res, token, {
+      sendToken(res, "student_token", student_token, {
         domain,
       });
 
@@ -251,11 +250,11 @@ export const login = async (req, res) => {
         : undefined;
 
     if (role === "teacher") {
-      sendToken(res, token, {
+      sendToken(res, "teacher_token", token, {
         domain,
       });
     } else {
-      sendToken(res, token, {
+      sendToken(res, "student_token", token, {
         domain,
       });
     }
@@ -283,12 +282,15 @@ export const logout = (req, res) => {
         : `${tenantSlug}.edukate.in`
       : undefined;
 
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    domain,
-  });
+  res.clearCookie(
+    req.user?.role === "teacher" ? "teacher_token" : "student_token",
+    {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      domain,
+    },
+  );
 
   res.status(200).json({ message: "Logged out successfully" });
 };
