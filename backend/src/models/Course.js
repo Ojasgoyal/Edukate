@@ -35,11 +35,16 @@ const courseSchema = new mongoose.Schema(
       min: 0,
     },
 
-    lectures: [
+    sections: [
       {
-        title: String,
-        videoUrl: String, // optional
-      },
+        title: { type: String, required: true, default: "New Section" },
+        lectures: [
+          {
+            title: String,
+            videoUrl: String, 
+          },
+        ]
+      }
     ],
     isPublished: {
       type: Boolean,

@@ -118,44 +118,56 @@ export default function PublicCourse() {
 
             {access.canViewLectures ? (
               <div className={`space-y-4 ${activeLecture ? "pr-2 max-h-[70vh] overflow-y-auto" : ""}`}>
-                {course.lectures?.length > 0 ? (
-                  course.lectures.map((lecture, idx) => {
-                    const isPlaying = activeLecture?._id === lecture._id || activeLecture?.title === lecture.title; 
-                    const hasVideo = !!lecture.videoUrl && lecture.videoUrl.trim() !== "";
-                    
-                    return (
-                      <div
-                        key={idx}
-                        className={`p-4 border rounded-md flex justify-between items-center transition-all ${
-                          isPlaying ? "bg-primary/10 border-primary" : "bg-muted/30"
-                        }`}
-                      >
-                        <span className={`font-medium ${isPlaying ? "text-primary" : ""}`}>
-                          {idx + 1}. {lecture.title}
-                        </span>
-                        
-                        <button 
-                          onClick={() => {
-                            if (!hasVideo) return; // Extra block safety
-                            setActiveLecture(lecture);
-                            if (!activeLecture) {
-                               window.scrollTo({ top: 300, behavior: 'smooth' });
-                            }
-                          }}
-                          disabled={!hasVideo}
-                          className={`text-sm font-medium ${
-                            !hasVideo 
-                              ? "text-muted-foreground opacity-50 cursor-not-allowed" 
-                              : isPlaying 
-                                ? "text-primary underline" 
-                                : "text-muted-foreground hover:text-foreground underline"
-                          }`}
-                        >
-                          {!hasVideo ? "No Video" : isPlaying ? "Playing" : "Watch"}
-                        </button>
+                {course.sections?.length > 0 ? (
+                  course.sections.map((section, secIdx) => (
+                    <div key={secIdx} className="mb-6">
+                      {/* Section Title */}
+                      <h3 className="font-bold text-lg mb-3 pb-1 border-b text-foreground/80">
+                        {section.title}
+                      </h3>
+                      
+                      {/* Section Lectures */}
+                      <div className="space-y-3">
+                        {section.lectures?.length > 0 ? (
+                          section.lectures.map((lecture, lecIdx) => {
+                            const isPlaying = activeLecture?._id === lecture._id || activeLecture?.title === lecture.title; 
+                            const hasVideo = !!lecture.videoUrl && lecture.videoUrl.trim() !== "";
+                            
+                            return (
+                              <div
+                                key={lecIdx}
+                                className={`p-4 border rounded-md flex justify-between items-center transition-all ${
+                                  isPlaying ? "bg-primary/10 border-primary" : "bg-muted/30"
+                                }`}
+                              >
+                                <span className={`font-medium ${isPlaying ? "text-primary" : ""}`}>
+                                  {lecIdx + 1}. {lecture.title}
+                                </span>
+                                
+                                <button 
+                                  onClick={() => {
+                                    if (hasVideo) setActiveLecture(lecture);
+                                  }}
+                                  disabled={!hasVideo}
+                                  className={`text-sm font-medium ${
+                                    !hasVideo 
+                                      ? "text-muted-foreground opacity-50 cursor-not-allowed" 
+                                      : isPlaying 
+                                        ? "text-primary underline" 
+                                        : "text-muted-foreground hover:text-foreground underline"
+                                  }`}
+                                >
+                                  {!hasVideo ? "No Video" : isPlaying ? "Playing" : "Watch"}
+                                </button>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="text-sm text-muted-foreground ml-2">No content yet.</p>
+                        )}
                       </div>
-                    );
-                  })
+                    </div>
+                  ))
                 ) : (
                   <p>No lectures added yet.</p>
                 )}
