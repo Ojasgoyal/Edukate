@@ -120,16 +120,21 @@ export const deleteCourse = async (req, res) => {
   try {
     const courseSlug = req.params.slug.toLowerCase().trim();
 
+    // 1. Delete the course and get the deleted document
     const course = await Course.findOneAndDelete({
       courseSlug,
       teacherId: req.user.id,
     });
 
+    // 2. Check if the course existed
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    res.json({ message: "Course deleted" });
+    // 3. Delete all enrollments associated with this course
+    await Enrollments.deleteMany({ courseId: course._id });
+
+    res.json({ message: "Course and related enrollments deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
