@@ -223,6 +223,7 @@ export const getCourseDetails = async (req, res) => {
       slug: course.courseSlug,
       isPublished: course.isPublished,
       price: course.price || 0,
+      thumbnail: course.thumbnail || "",
     };
 
     if (canViewLectures) {

@@ -40,20 +40,20 @@ export default function TenantHome() {
     <div className="min-h-screen bg-background">
       <TenantNavbar />
 
-      <main className="max-w-6xl mx-auto pt-24 px-6">
+      <main className="max-w-6xl mx-auto px-6 py-10">
         {/* Hero Section */}
-        <section className="py-12 border-b mb-10">
-          <h1 className="text-4xl font-bold font-dm-serif mb-4 capitalize">
+        <section className="pt-6 pb-2 border-b mb-4">
+          <h1 className="text-3xl font-bold font-dm-serif my-4 capitalize">
             Welcome to {tenant}'s Classroom
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-md">
             Explore our professional courses and start your learning journey today.
           </p>
         </section>
 
         {/* Courses Grid */}
         <section>
-          <h2 className="text-2xl font-bold mb-6">Available Courses</h2>
+          <h2 className="text-xl font-semibold mb-6">Available Courses</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
@@ -70,7 +70,19 @@ export default function TenantHome() {
                   to={`/course/${course.courseSlug}`}
                   className="group border rounded-lg overflow-hidden hover:shadow-md transition-all"
                 >
-                  <div className="aspect-video bg-muted group-hover:opacity-90 transition-opacity" />
+                  <div className="aspect-video bg-muted group-hover:opacity-90 transition-opacity" >
+                    {course.thumbnail ? (
+                      <img 
+                        src={course.thumbnail}
+                        alt={course.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                        No Image
+                      </div>
+                    )}
+                  </div>
                   <div className="p-4">
                     <h3 className="font-bold text-lg mb-1 group-hover:text-primary transition-colors">
                       {course.title}

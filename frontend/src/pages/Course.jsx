@@ -77,9 +77,11 @@ export default function PublicCourse() {
     <div className="min-h-screen bg-background">
       <TenantNavbar tenantName={tenant} />
 
-      <main className={`mx-auto pt-24 px-6 pb-20 transition-all duration-500 ease-in-out ${activeLecture ? "max-w-6xl" : "max-w-4xl"}`}>
+      <main className={`mx-auto pt-24 px-6 transition-all duration-500 ease-in-out ${activeLecture ? "max-w-6xl" : "max-w-4xl"}`}>
         
-        <div className="border-b pb-8">
+        <div className="flex justify-between pr-10 border-b pb-8">
+          <div>
+
           <h1 className="text-4xl font-bold font-dm-serif mb-4">
             {course.title}
           </h1>
@@ -109,6 +111,10 @@ export default function PublicCourse() {
               You are the owner of this course
             </div>
           )}
+          </div>
+          <div>
+            <img src={course.thumbnail} alt={course.title} className="w-80 object-cover rounded-sm shadow-md" />
+          </div>
         </div>
 
         <div className={`py-10 grid gap-8 items-start ${activeLecture ? "lg:grid-cols-3" : "grid-cols-1"}`}>

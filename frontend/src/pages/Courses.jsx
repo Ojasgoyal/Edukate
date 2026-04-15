@@ -43,14 +43,17 @@ export default function Courses() {
         ) : courses?.length === 0 ? (
           <p>You have not created any courses yet.</p>
         ) : (
-          <div className="flex">
+          <div className="flex gap-4 flex-wrap">
             {courses.map((course) => (
               <Link
-                className="w-64 h-48 bg-background/80 shadow border border-px border-chart-1 rounded-sm flex flex-col justify-end p-8 gap-4 mr-4 transition-transform hover:scale-102"
+                className="w-fit h-fit bg-background/80 shadow border border-px border-chart-1 rounded-sm flex flex-col justify-center px-6 py-8 gap-2 transition-transform hover:scale-102"
                 key={course._id}
                 to={`/dashboard/courses/edit/${course.courseSlug}`}
               >
-                <div className="font-medium truncate">{course.title}</div>
+                <div>
+                  <img className="w-64 object-cover rounded-sm " src={course.thumbnail} alt={course.title} />
+                </div>
+                <div className="text-xl font-semibold truncate">{course.title}</div>
                 <div className="text-sm truncate line-clamp-2">{course.description}</div>
               </Link>
             ))}
