@@ -110,6 +110,76 @@ export default function EditCourse() {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setSaving(true);
+
+    const formData = new FormData();
+    formData.append("image", file);
+    if (course.thumbnail) {
+      formData.append("oldImageUrl", course.thumbnail);
+    }
+
+    try {
+      // 1. Upload to Cloudinary
+      const res = await axios.post(`${apibaseurl}/api/upload`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      
+      const newThumbnailUrl = res.data.imageUrl;
+
+      // 2. Auto-save ONLY the new thumbnail URL to the course in Database
+      await axios.put(
+        `${apibaseurl}/api/courses/edit/${slug}`, 
+        { thumbnail: newThumbnailUrl }, // Partial update!
+        { withCredentials: true }
+      );
+
+      // 3. Update UI state
+      setCourse({ ...course, thumbnail: newThumbnailUrl });
+      showToast("Thumbnail uploaded and saved instantly!", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to upload thumbnail.", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleImageDelete = async () => {
+    if (!course.thumbnail) return;
+    
+    if (!window.confirm("Are you sure you want to remove this thumbnail?")) return;
+
+    setSaving(true);
+    try {
+      // 1. Delete from Cloudinary
+      await axios.delete(`${apibaseurl}/api/upload`, {
+        data: { imageUrl: course.thumbnail },
+        withCredentials: true,
+      });
+      
+      // 2. Auto-save empty thumbnail string to the course in Database
+      await axios.put(
+        `${apibaseurl}/api/courses/edit/${slug}`, 
+        { thumbnail: "" }, // Partial update
+        { withCredentials: true }
+      );
+
+      // 3. Update UI state
+      setCourse({ ...course, thumbnail: "" });
+      showToast("Thumbnail removed and saved instantly!", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to remove thumbnail.", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (
       !window.confirm(
@@ -208,6 +278,77 @@ export default function EditCourse() {
               onChange={handleDetailsChange}
               className="w-full p-2 border rounded"
             />
+          </div>
+          {/* --- Insert this alongside Title, Price, Description --- */}
+          <div className="col-span-2">
+            <label className="block text-sm font-medium mb-2">
+              Course Thumbnail
+            </label>
+            <div className="flex flex-col gap-4">
+              {course.thumbnail ? (
+                // Display current thumbnail with hover actions overlay
+                <div className="relative w-full max-w-md aspect-video bg-gray-100 rounded border overflow-hidden group">
+                  
+                  {/* Processing Overlay when changing/deleting */}
+                  {saving && (
+                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[1px]">
+                      <div className="w-10 h-10 border-2 border-foreground/70 border-t-transparent rounded-full animate-spin mb-2"></div>
+                      <span className="text-sm font-medium text-chart-3 drop-shadow-sm">Processing...</span>
+                    </div>
+                  )}
+
+                  <img
+                    src={course.thumbnail}
+                    alt="Thumbnail preview"
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Hover overlay with Change/Remove buttons */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 z-10">
+                    <label className="cursor-pointer bg-white text-black px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-200 shadow">
+                      Change Image
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        disabled={saving}
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleImageDelete}
+                      className="bg-red-500 text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-red-600 shadow disabled:bg-red-300"
+                      disabled={saving}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // Empty state file input
+                <div className="w-full max-w-md aspect-video bg-gray-50 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center text-gray-500 hover:bg-gray-100 hover:border-gray-400 transition-colors cursor-pointer relative overflow-hidden">
+                  {saving ? (
+                    <div className="animate-pulse flex flex-col items-center">
+                      <div className="w-10 h-10 border-2 border-foreground/70 border-t-transparent rounded-full animate-spin mb-2"></div>
+                      <span className="text-sm font-medium">Uploading...</span>
+                    </div>
+                  ) : (
+                    <label className="absolute inset-0 w-full h-full cursor-pointer flex flex-col items-center justify-center">
+                      <span className="text-sm font-medium text-foreground">Click to upload thumbnail</span>
+                      <span className="text-xs mt-1 text-muted-foreground">16:9 Aspect Ratio (e.g., 1280x720)</span>
+                      <span className="text-xs text-muted-foreground mt-1">JPG, PNG, WebP up to 5MB</span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleImageUpload} 
+                        className="hidden" 
+                      />
+                    </label>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <input

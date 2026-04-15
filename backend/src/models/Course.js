@@ -35,6 +35,11 @@ const courseSchema = new mongoose.Schema(
       min: 0,
     },
 
+    thumbnail: {
+      type: String,
+      default: "",
+    },
+
     sections: [
       {
         title: { type: String, required: true, default: "New Section" },

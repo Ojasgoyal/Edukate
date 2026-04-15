@@ -4,7 +4,7 @@ import Enrollments from "../models/Enrollments.js";
 
 export const createCourse = async (req, res) => {
   try {
-    const { title, description, slug, sections , price } = req.body;
+    const { title, description, slug, sections , price , thumbnail } = req.body;
     const teacherId = req.user.id;
     const tenant = req.user.slug.toLowerCase().trim();
     const courseSlug = slug.toLowerCase().trim();
@@ -38,6 +38,7 @@ export const createCourse = async (req, res) => {
       description,
       courseSlug,
       sections: sections || [],
+      thumbnail: thumbnail || "",
       price: price || 0, 
       teacherId,
       tenant,
@@ -98,7 +99,7 @@ export const updateCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    const allowedFields = ["title", "description", "sections", "isPublished", "price" ];
+    const allowedFields = ["title", "description", "sections", "isPublished", "price", "thumbnail" ];
 
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {
@@ -240,3 +241,4 @@ export const getCourseDetails = async (req, res) => {
     res.status(500).json({ message: error.message || "Server Error" });
   }
 };
+
