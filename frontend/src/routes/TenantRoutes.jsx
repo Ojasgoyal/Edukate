@@ -16,15 +16,6 @@ export default function TenantRoutes() {
       <Route path="/course/:courseSlug" element={<Course />} />
 
       <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
         path="/login"
         element={
           <PublicRoute mode="tenant">
