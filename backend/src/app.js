@@ -6,6 +6,7 @@ import authRoutes from "./auth/auth.routes.js";
 import courseRoutes from "./course/course.routes.js";
 import enrollRoutes from "./enrollments/enroll.routes.js"
 import upload from "./upload/upload.routes.js";
+import paymentRoutes from "./payments/payment.routes.js";
 dotenv.config();
 
 const app = express();
@@ -50,6 +51,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/enroll" , enrollRoutes);
 app.use("/api/upload", upload);
+app.use("/api/payments", paymentRoutes);
 
 app.get("/", (req, res) => {
     res.send("Edukate API running...");
