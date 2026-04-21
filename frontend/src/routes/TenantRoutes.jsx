@@ -6,7 +6,6 @@ import Studentlogin from "../pages/Studentlogin";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
-import Profile from "../pages/Profile";
 // import NotFound from "../pages/NotFound";
 
 export default function TenantRoutes() {
