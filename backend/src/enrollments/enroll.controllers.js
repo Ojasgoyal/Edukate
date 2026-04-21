@@ -58,7 +58,7 @@ export const getCourses = async (req, res) => {
     const enrollments = await Enrollments.find({ studentId, tenant })
       .populate({
         path: "courseId",
-        select: "title description courseSlug isPublished tenant", // only needed fields
+        select: "-lectures", // only needed fields
       })
       .select("courseId createdAt");
 
