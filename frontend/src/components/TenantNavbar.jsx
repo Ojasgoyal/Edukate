@@ -1,7 +1,7 @@
 import { Link, replace } from "react-router-dom";
 import { SwatchBook } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { useState , useContext } from "react";
+import { useState, useContext } from "react";
 import { TenantContext } from "../context/TenantContext";
 import { useNavigate } from "react-router-dom";
 
@@ -21,8 +21,8 @@ export default function TenantNavbar() {
   const handleStudentLogout = async () => {
     setLogoutLoading(true);
     await logout();
-    setLogoutLoading(false)
-    navigate("/" , { replace: true });
+    setLogoutLoading(false);
+    navigate("/", { replace: true });
   };
 
   return (
@@ -39,9 +39,21 @@ export default function TenantNavbar() {
         (!isDemo ? (
           <div className="flex gap-4 items-center">
             {isStudent ? (
-              <button className={`bg-foreground text-background px-4 py-2 rounded-sm text-sm font-medium`} onClick={handleStudentLogout} disabled={logoutLoading}>
-                { logoutLoading ? "Logging out..." : "Logout" }
-              </button>
+              <div className="flex gap-4 items-center">
+                <Link
+                  to="/profile"
+                  className="text-sm font-medium hover:underline underline-offset-4"
+                >
+                  My Profile
+                </Link>
+                <button
+                  className={`bg-foreground text-background px-4 py-2 rounded-sm text-sm font-medium`}
+                  onClick={handleStudentLogout}
+                  disabled={logoutLoading}
+                >
+                  {logoutLoading ? "Logging out..." : "Logout"}
+                </button>
+              </div>
             ) : (
               <Link
                 to="/login"

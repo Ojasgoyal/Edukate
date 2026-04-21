@@ -33,8 +33,18 @@ export default function TenantHome() {
     fetchData();
   }, [tenant, apiBaseUrl]);
 
-  if (error === "NO_TENANT") return <div className="h-screen flex items-center justify-center"><h2>Educator "{tenant}" not found.</h2></div>;
-  if (error) return <div className="h-screen flex items-center justify-center"><h2>Something went wrong.</h2></div>;
+  if (error === "NO_TENANT")
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <h2>Educator "{tenant}" not found.</h2>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <h2>Something went wrong.</h2>
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-background">
@@ -47,32 +57,38 @@ export default function TenantHome() {
             Welcome to {tenant}'s Classroom
           </h1>
           <p className="text-muted-foreground text-md">
-            Explore our professional courses and start your learning journey today.
+            Explore our professional courses and start your learning journey
+            today.
           </p>
         </section>
 
         {/* Courses Grid */}
         <section>
           <h2 className="text-xl font-semibold mb-6">Available Courses</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
               // Pulse Skeletons
               [1, 2, 3].map((n) => (
-                <div key={n} className="h-64 bg-muted animate-pulse rounded-lg" />
+                <div
+                  key={n}
+                  className="h-64 bg-muted animate-pulse rounded-lg"
+                />
               ))
             ) : courses?.length === 0 ? (
-              <p className="text-muted-foreground">No courses available at the moment.</p>
+              <p className="text-muted-foreground">
+                No courses available at the moment.
+              </p>
             ) : (
               courses?.map((course) => (
-                <Link 
-                  key={course._id} 
+                <Link
+                  key={course._id}
                   to={`/course/${course.courseSlug}`}
                   className="group border rounded-lg overflow-hidden hover:shadow-md transition-all"
                 >
-                  <div className="aspect-video bg-muted group-hover:opacity-90 transition-opacity" >
+                  <div className="aspect-video bg-muted group-hover:opacity-90 transition-opacity">
                     {course.thumbnail ? (
-                      <img 
+                      <img
                         src={course.thumbnail}
                         alt={course.title}
                         className="w-full h-full object-cover"
@@ -91,8 +107,12 @@ export default function TenantHome() {
                       {course.description}
                     </p>
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="font-bold text-lg">₹{course.price || "Free"}</span>
-                      <span className="text-xs bg-muted px-2 py-1 rounded">View Details</span>
+                      <span className="font-bold text-lg">
+                        ₹{course.price || "Free"}
+                      </span>
+                      <span className="text-xs bg-muted px-2 py-1 rounded">
+                        View Details
+                      </span>
                     </div>
                   </div>
                 </Link>
