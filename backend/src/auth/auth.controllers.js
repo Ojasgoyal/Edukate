@@ -3,10 +3,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const sendToken = (res, cookieName, token, options = {}) => {
+  const isProd = process.env.NODE_ENV === "production";
+
   res.cookie(cookieName, token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "None",
+    // "false" locally so Chrome accepts it over HTTP subdomains
+    secure: isProd,
+    sameSite: isProd ? "None" : "Lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
     ...options,
   });
@@ -26,10 +29,8 @@ export const register = async (req, res) => {
 
     const domain =
       process.env.NODE_ENV === "production"
-        ? role === "teacher"
-          ? ".edukate.in"
-          : `${tenantSlug}.edukate.in`
-        : undefined;
+        ? ".edukate.in" // Allows the API to successfully set it!
+        : "localhost";
 
     // ---------------- TEACHER ----------------
     if (role === "teacher") {
@@ -244,10 +245,8 @@ export const login = async (req, res) => {
 
     const domain =
       process.env.NODE_ENV === "production"
-        ? user?.role === "teacher"
-          ? ".edukate.in"
-          : `${user.slug}.edukate.in`
-        : undefined;
+        ? ".edukate.in" // Allows the API to successfully set it!
+        : "localhost";
 
     if (role === "teacher") {
       sendToken(res, "teacher_token", token, {
@@ -275,12 +274,10 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   const tenantSlug = req.tenant?.toLowerCase().trim();
 
-  const domain =
-    process.env.NODE_ENV === "production"
-      ? req.user?.role === "teacher"
-        ? ".edukate.in"
-        : `${tenantSlug}.edukate.in`
-      : undefined;
+    const domain =
+      process.env.NODE_ENV === "production"
+        ? ".edukate.in" // Allows the API to successfully set it!
+        : "localhost";
 
   res.clearCookie(
     req.user?.role === "teacher" ? "teacher_token" : "student_token",
