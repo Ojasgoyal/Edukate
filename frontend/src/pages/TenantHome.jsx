@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 export default function TenantHome() {
   const { tenant } = useContext(TenantContext);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
-  const { userData } = useAuth();
+  const { userData , fetchUser } = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +31,10 @@ export default function TenantHome() {
     };
 
     fetchData();
+    fetchUser(); // Ensure we have the latest user data for this tenant
   }, [tenant, apiBaseUrl]);
+
+
 
   if (error === "NO_TENANT")
     return (
@@ -71,7 +74,7 @@ export default function TenantHome() {
         </section>
 
         {/* Your Courses */}
-        {userData?.user.name && (
+        {userData?.user.name ? (
           <section>
             <h2 className="text-xl font-semibold mb-6">Your Courses</h2>
 
@@ -123,6 +126,13 @@ export default function TenantHome() {
                   ))}
             </div>
           </section>
+        ) : (
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">Your Courses</h2>
+            <p className="text-muted-foreground">
+              Please log in to view your courses and progress.
+            </p>
+          </div>
         )}
 
         {/* Courses Grid */}
