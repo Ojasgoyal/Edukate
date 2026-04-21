@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 export default function TenantHome() {
   const { tenant } = useContext(TenantContext);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
-  const userData = useAuth();
+  const { userData } = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -71,7 +71,7 @@ export default function TenantHome() {
         </section>
 
         {/* Your Courses */}
-        {userData?.user > 0 && (
+        {userData?.user.name && (
           <section>
             <h2 className="text-xl font-semibold mb-6">Your Courses</h2>
 
