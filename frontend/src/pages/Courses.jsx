@@ -47,27 +47,33 @@ export default function Courses() {
           <div className="flex gap-4 flex-wrap">
             {courses.map((course) => (
               <Link
-                className="w-fit h-fit bg-background/80 shadow border border-px border-chart-1 rounded-sm flex flex-col justify-start gap-2 transition-transform hover:scale-102"
+                // 1. Changed w-fit to w-64 here
+                className="w-64 h-fit bg-background/80 shadow border border-px border-chart-1 rounded-sm flex flex-col justify-start gap-2 transition-transform hover:scale-102"
                 key={course._id}
                 to={`/dashboard/courses/edit/${course.courseSlug}`}
               >
                 <img
-                  className="w-64 object-cover rounded-t-sm"
+                  // You can change this to w-full since the parent is now w-64
+                  className="w-full object-cover rounded-t-sm"
                   src={course.thumbnail}
                   alt={course.title}
                 />
 
-                <div className="flex h-fit justify-between pt-1 pb-5 px-4">
-                  <div className="flex flex-col gap-2">
+                {/* Added gap-2 so text doesn't touch the price */}
+                <div className="flex h-fit justify-between pt-1 pb-5 px-4 gap-2">
+                  {/* 2. Added flex-1 and min-w-0 here to allow text truncation */}
+                  <div className="flex flex-col gap-2 flex-1 min-w-0">
                     <div className="text-xl font-semibold truncate">
                       {course.title}
                     </div>
-                    <div className="text-sm truncate line-clamp-2">
+                    {/* 3. Removed truncate, kept line-clamp-2 */}
+                    <div className="text-sm line-clamp-2 text-muted-foreground">
                       {course.description}
                     </div>
                   </div>
 
-                  <div className="font-semibold text-md pr-2">₹{course.price}</div>
+                  {/* 4. Added shrink-0 so the price doesn't get squeezed */}
+                  <div className="font-semibold text-md pr-2 shrink-0">₹{course.price}</div>
                 </div>
               </Link>
             ))}
