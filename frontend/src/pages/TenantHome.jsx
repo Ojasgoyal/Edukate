@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 export default function TenantHome() {
   const { tenant } = useContext(TenantContext);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
-  const { userData , fetchUser } = useAuth();
+  const { userData, fetchUser } = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,8 +34,6 @@ export default function TenantHome() {
     fetchUser(); // Ensure we have the latest user data for this tenant
   }, [tenant, apiBaseUrl]);
 
-
-
   if (error === "NO_TENANT")
     return (
       <div className="h-screen flex items-center justify-center">
@@ -56,9 +54,9 @@ export default function TenantHome() {
       <main className="max-w-6xl mx-auto px-6 py-10">
         {/* Hero Section */}
         <section className="pt-6 pb-2 border-b mb-4">
-          {userData?.name ? (
+          {userData?.user.name ? (
             <p className="text-sm text-muted-foreground">
-              Hi, {userData.name.split(" ")[0]}!
+              Hi, {userData.user.name.split(" ")[0]}!
             </p>
           ) : (
             <>
@@ -74,7 +72,7 @@ export default function TenantHome() {
         </section>
 
         {/* Your Courses */}
-        {userData?.user.name ? (
+        {userData?.user && (
           <section>
             <h2 className="text-xl font-semibold mb-6">Your Courses</h2>
 
@@ -126,13 +124,6 @@ export default function TenantHome() {
                   ))}
             </div>
           </section>
-        ) : (
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Your Courses</h2>
-            <p className="text-muted-foreground">
-              Please log in to view your courses and progress.
-            </p>
-          </div>
         )}
 
         {/* Courses Grid */}
