@@ -80,6 +80,7 @@ export const register = async (req, res) => {
       const teacher_token = jwt.sign(
         {
           id: user._id,
+          name: user.name, // Add this
           role: user.role,
           slug: user.slug,
         },
@@ -142,6 +143,7 @@ export const register = async (req, res) => {
       const student_token = jwt.sign(
         {
           id: user._id,
+          name: user.name, // Add this
           role: user.role,
           slug: user.slug,
         },
@@ -236,6 +238,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       {
         id: user._id,
+        name: user.name, // Add this
         role: user.role,
         slug: user.slug,
       },

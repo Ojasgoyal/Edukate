@@ -39,13 +39,6 @@ export default function TenantNavbar() {
         (!isDemo ? (
           <div className="flex gap-4 items-center">
             {isStudent ? (
-              <div className="flex gap-4 items-center">
-                <Link
-                  to="/profile"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                >
-                  My Profile
-                </Link>
                 <button
                   className={`bg-foreground text-background px-4 py-2 rounded-sm text-sm font-medium`}
                   onClick={handleStudentLogout}
@@ -53,7 +46,6 @@ export default function TenantNavbar() {
                 >
                   {logoutLoading ? "Logging out..." : "Logout"}
                 </button>
-              </div>
             ) : (
               <Link
                 to="/login"
