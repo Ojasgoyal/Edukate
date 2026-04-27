@@ -46,11 +46,14 @@ export default function TenantHome() {
               },
             );
             // Store just the IDs of courses they own for easy lookup
-            const ids = new Set(enrollRes.data.courses.map((c) => c.id));
+            const ids = new Set(enrollRes.data.courses.map((c) => c.id || c._id));
             setEnrolledCourseIds(ids);
           } catch (e) {
             console.error("Could not fetch enrolled courses:", e);
           }
+        } else {
+          // Clear enrolled courses when user logs out
+          setEnrolledCourseIds(new Set());
         }
       } catch (err) {
         setError(err.response?.status === 404 ? "NO_TENANT" : "GENERIC");
