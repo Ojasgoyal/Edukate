@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function useProgress(tenant, userId) {
+export function useProgress(tenant, userId) {
   const [progressData, setProgressData] = useState({});
 
   const storageKey = `edukate_progress_${tenant}_${userId}`;
