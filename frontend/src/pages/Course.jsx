@@ -190,13 +190,13 @@ export default function PublicCourse() {
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-sm font-medium">Your Progress</span>
                     <span className="text-sm font-medium text-primary">
-                      {getCourseProgress(course._id)}%
+                      {getCourseProgress(course.id || course._id)}%
                     </span>
                   </div>
                   <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                     <div
                       className="h-full bg-primary transition-all duration-300"
-                      style={{ width: `${getCourseProgress(course._id)}%` }}
+                      style={{ width: `${getCourseProgress(course.id || course._id)}%` }}
                     />
                   </div>
                 </div>
@@ -280,12 +280,12 @@ export default function PublicCourse() {
                                       type="checkbox"
                                       className="w-4 h-4 rounded-full accent-primary cursor-pointer"
                                       checked={isCompleted(
-                                        course._id,
+                                        course.id || course._id, 
                                         lecture._id,
                                       )}
                                       onChange={() =>
                                         toggleLecture(
-                                          course._id,
+                                          course.id || course._id,
                                           lecture._id,
                                           totalLectures,
                                         )

@@ -130,11 +130,12 @@ export default function TenantHome() {
               </p>
             ) : (
               courses?.map((course) => {
-                const isEnrolled = enrolledCourseIds.has(course._id);
+                const courseId = course._id || course.id;
+                const isEnrolled = enrolledCourseIds.has(courseId);
 
                 return (
                   <Link
-                    key={course._id}
+                    key={courseId}
                     to={`/course/${course.courseSlug}`}
                     className="group flex flex-col bg-card border rounded-xl overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300 relative"
                   >
@@ -174,14 +175,14 @@ export default function TenantHome() {
                               Progress
                             </span>
                             <span className="text-xs font-semibold text-primary">
-                              {getCourseProgress(course._id)}%
+                              {getCourseProgress(courseId)}%
                             </span>
                           </div>
                           <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
                             <div
                               className="h-full bg-primary transition-all duration-300"
                               style={{
-                                width: `${getCourseProgress(course._id)}%`,
+                                width: `${getCourseProgress(courseId)}%`,
                               }}
                             />
                           </div>
