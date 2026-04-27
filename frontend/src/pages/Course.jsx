@@ -5,12 +5,18 @@ import { useAuth } from "../context/AuthContext";
 import TenantNavbar from "../components/TenantNavbar";
 import Watch from "../components/Courses/Watch";
 import axios from "axios";
+import { useProgress } from "../hooks/useProgress";
 
 export default function PublicCourse() {
   const { courseSlug } = useParams();
   const { tenant } = useContext(TenantContext);
   const { userData } = useAuth();
   const navigate = useNavigate();
+  const userId = userData?.user?.id || userData?.user?._id;
+  const { toggleLecture, getCourseProgress, isCompleted } = useProgress(
+    tenant,
+    userId,
+  );
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -154,6 +160,12 @@ export default function PublicCourse() {
     }
   };
 
+  const totalLectures =
+    data?.course?.sections?.reduce(
+      (acc, section) => acc + (section.lectures?.length || 0),
+      0,
+    ) || 0;
+
   return (
     <div className="min-h-screen bg-background">
       <TenantNavbar tenantName={tenant} />
@@ -169,6 +181,26 @@ export default function PublicCourse() {
             <p className="text-muted-foreground text-lg mb-6">
               {course.description}
             </p>
+
+            {/* Progress Bar */}
+            {(access.isEnrolled || access.isOwner) &&
+              totalLectures > 0 &&
+              userId && (
+                <div className="mb-6 max-w-md">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-sm font-medium">Your Progress</span>
+                    <span className="text-sm font-medium text-primary">
+                      {getCourseProgress(course._id)}%
+                    </span>
+                  </div>
+                  <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all duration-300"
+                      style={{ width: `${getCourseProgress(course._id)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
 
             {!access.isOwner && !access.isEnrolled && (
               <div className="flex gap-10 justify-baseline items-center">
@@ -242,11 +274,30 @@ export default function PublicCourse() {
                                     : "bg-muted/30"
                                 }`}
                               >
-                                <span
-                                  className={`font-medium ${isPlaying ? "text-primary" : ""}`}
-                                >
-                                  {lecIdx + 1}. {lecture.title}
-                                </span>
+                                <div className="flex items-center gap-3">
+                                  {access.canViewLectures && userId && (
+                                    <input
+                                      type="checkbox"
+                                      className="w-4 h-4 rounded-full accent-primary cursor-pointer"
+                                      checked={isCompleted(
+                                        course._id,
+                                        lecture._id,
+                                      )}
+                                      onChange={() =>
+                                        toggleLecture(
+                                          course._id,
+                                          lecture._id,
+                                          totalLectures,
+                                        )
+                                      }
+                                    />
+                                  )}
+                                  <span
+                                    className={`font-medium ${isPlaying ? "text-primary" : ""}`}
+                                  >
+                                    {lecIdx + 1}. {lecture.title}
+                                  </span>
+                                </div>
 
                                 <button
                                   onClick={() => {

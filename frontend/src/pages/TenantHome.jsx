@@ -4,12 +4,15 @@ import { TenantContext } from "../context/TenantContext";
 import TenantNavbar from "../components/TenantNavbar";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useProgress } from "../hooks/useProgress";
 
 export default function TenantHome() {
   const { tenant } = useContext(TenantContext);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
   const { userData, fetchUser } = useAuth();
-  
+  const userId = userData?.user?.id || userData?.user?._id;
+  const { getCourseProgress } = useProgress(tenant, userId);
+
   const [courses, setCourses] = useState([]);
   const [enrolledCourseIds, setEnrolledCourseIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
@@ -35,10 +38,13 @@ export default function TenantHome() {
         // 2. If the user is a logged-in student, fetch their specific enrollments
         if (isLoggedIn && isStudent) {
           try {
-            const enrollRes = await axios.get(`${apiBaseUrl}/api/enroll/courses`, {
-              headers: { "x-tenant": tenant },
-              withCredentials: true,
-            });
+            const enrollRes = await axios.get(
+              `${apiBaseUrl}/api/enroll/courses`,
+              {
+                headers: { "x-tenant": tenant },
+                withCredentials: true,
+              },
+            );
             // Store just the IDs of courses they own for easy lookup
             const ids = new Set(enrollRes.data.courses.map((c) => c.id));
             setEnrolledCourseIds(ids);
@@ -83,7 +89,9 @@ export default function TenantHome() {
                 Welcome back, {firstName}!
               </h1>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Ready to continue your journey? Pick up where you left off or discover new courses carefully crafted by <span className="capitalize font-semibold">{tenant}</span>.
+                Ready to continue your journey? Pick up where you left off or
+                discover new courses carefully crafted by{" "}
+                <span className="capitalize font-semibold">{tenant}</span>.
               </p>
             </>
           ) : (
@@ -92,7 +100,8 @@ export default function TenantHome() {
                 Welcome to {tenant}'s Classroom
               </h1>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Explore our professional courses and take the first step towards mastering new skills today.
+                Explore our professional courses and take the first step towards
+                mastering new skills today.
               </p>
             </>
           )}
@@ -110,7 +119,10 @@ export default function TenantHome() {
             {loading ? (
               // Refined Pulse Skeletons
               [1, 2, 3].map((n) => (
-                <div key={n} className="h-85 bg-muted/60 animate-pulse rounded-xl border" />
+                <div
+                  key={n}
+                  className="h-85 bg-muted/60 animate-pulse rounded-xl border"
+                />
               ))
             ) : courses?.length === 0 ? (
               <p className="text-muted-foreground col-span-full py-10 text-center border border-dashed rounded-xl bg-muted/20">
@@ -140,14 +152,29 @@ export default function TenantHome() {
                       )}
 
                       {/* Display an 'Enrolled' tag beautifully positioned over the thumbnail */}
-                      {isEnrolled && (
-                        <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-md z-10 flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-                          Enrolled
+                      {/* Add this block right below the <p className="text-sm..."> */}
+                      {isEnrolled && userId && (
+                        <div className="mt-2 mb-4">
+                          <div className="flex justify-between mb-1">
+                            <span className="text-xs text-muted-foreground">
+                              Progress
+                            </span>
+                            <span className="text-xs font-semibold text-primary">
+                              {getCourseProgress(course._id)}%
+                            </span>
+                          </div>
+                          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-primary transition-all duration-300"
+                              style={{
+                                width: `${getCourseProgress(course._id)}%`,
+                              }}
+                            />
+                          </div>
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="p-5 flex flex-col flex-1">
                       <h3 className="font-bold text-xl mb-2 group-hover:text-primary transition-colors">
                         {course.title}
@@ -155,17 +182,21 @@ export default function TenantHome() {
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
                         {course.description}
                       </p>
-                      
+
                       <div className="mt-auto pt-4 border-t flex items-center justify-between">
-                        <span className={`font-bold text-lg ${isEnrolled ? 'text-primary' : ''}`}>
+                        <span
+                          className={`font-bold text-lg ${isEnrolled ? "text-primary" : ""}`}
+                        >
                           {isEnrolled ? "Owned" : `₹${course.price || "Free"}`}
                         </span>
-                        
-                        <span className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${
-                          isEnrolled 
-                          ? "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground" 
-                          : "bg-muted text-foreground group-hover:bg-foreground group-hover:text-background"
-                        }`}>
+
+                        <span
+                          className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${
+                            isEnrolled
+                              ? "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
+                              : "bg-muted text-foreground group-hover:bg-foreground group-hover:text-background"
+                          }`}
+                        >
                           {isEnrolled ? "Continue" : "View Details ->"}
                         </span>
                       </div>
