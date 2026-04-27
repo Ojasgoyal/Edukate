@@ -152,7 +152,21 @@ export default function TenantHome() {
                       )}
 
                       {/* Display an 'Enrolled' tag beautifully positioned over the thumbnail */}
-                      {/* Add this block right below the <p className="text-sm..."> */}
+                      {isEnrolled && (
+                        <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-md z-10 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                          Enrolled
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-5 flex flex-col flex-1">
+                      <h3 className="font-bold text-xl mb-2 group-hover:text-primary transition-colors">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
+                        {course.description}
+                      </p>
                       {isEnrolled && userId && (
                         <div className="mt-2 mb-4">
                           <div className="flex justify-between mb-1">
@@ -173,15 +187,6 @@ export default function TenantHome() {
                           </div>
                         </div>
                       )}
-                    </div>
-
-                    <div className="p-5 flex flex-col flex-1">
-                      <h3 className="font-bold text-xl mb-2 group-hover:text-primary transition-colors">
-                        {course.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
-                        {course.description}
-                      </p>
 
                       <div className="mt-auto pt-4 border-t flex items-center justify-between">
                         <span
