@@ -54,7 +54,7 @@ export default function Courses() {
               >
                 <img
                   // You can change this to w-full since the parent is now w-64
-                  className="w-full object-cover rounded-t-sm"
+                  className="w-full aspect-video object-cover rounded-t-sm"
                   src={course.thumbnail}
                   alt={course.title}
                 />

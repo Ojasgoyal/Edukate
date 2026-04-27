@@ -131,7 +131,7 @@ export default function TenantHome() {
                         <img
                           src={course.thumbnail}
                           alt={course.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover aspect-video"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-muted-foreground">
